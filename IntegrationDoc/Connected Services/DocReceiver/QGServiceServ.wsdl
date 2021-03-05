@@ -1,0 +1,1100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:http="http://schemas.microsoft.com/ws/06/2004/policy/http" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:tns="http://qg.sync.isate.kz" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" name="QGServiceServ" targetNamespace="http://qg.sync.isate.kz" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://qg.sync.isate.kz" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://esedo.nitec.kz/service/model/document" />
+      <xs:import namespace="http://esedo.nitec.kz/service/model" />
+      <xs:import namespace="http://esedo.nitec.kz/service/model/extension" />
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xs:import namespace="http://esedo.nitec.kz/service/model/extension/eecbParts" />
+      <xs:import namespace="http://sed.isate.kz/service/model/document" />
+      <xs:import namespace="http://isate.kz/qujatgateway/tengri-bpm-web-service" />
+      <xs:import namespace="http://esedo.nitec.kz/service/model/notification" />
+      <xs:element name="SendDocOutgoing">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q1="http://esedo.nitec.kz/service/model/document" minOccurs="0" name="data" nillable="true" type="q1:docOutgoing" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendDocOutgoingResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q2="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendDocOutgoingResult" nillable="true" type="q2:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SaveDocumentToBPM">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q3="http://sed.isate.kz/service/model/document" minOccurs="0" name="data" nillable="true" type="q3:QGDocument" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SaveDocumentToBPMResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q4="http://sed.isate.kz/service/model/document" minOccurs="0" name="SaveDocumentToBPMResult" nillable="true" type="q4:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendUniversalMessage">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q5="http://isate.kz/qujatgateway/tengri-bpm-web-service" minOccurs="0" name="request" nillable="true" type="q5:DocumentRequest" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendUniversalMessageResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q6="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendUniversalMessageResult" nillable="true" type="q6:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateNotValid">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q7="http://esedo.nitec.kz/service/model/notification" minOccurs="0" name="data" nillable="true" type="q7:stateNotValid" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateNotValidResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q8="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendStateNotValidResult" nillable="true" type="q8:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateExecution">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q9="http://esedo.nitec.kz/service/model/notification" minOccurs="0" name="data" nillable="true" type="q9:stateExecution" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateExecutionResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q10="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendStateExecutionResult" nillable="true" type="q10:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateDelivered">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q11="http://esedo.nitec.kz/service/model/notification" minOccurs="0" name="data" nillable="true" type="q11:stateDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateDeliveredResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q12="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendStateDeliveredResult" nillable="true" type="q12:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateFinished">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q13="http://esedo.nitec.kz/service/model/notification" minOccurs="0" name="data" nillable="true" type="q13:stateFinished" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateFinishedResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q14="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendStateFinishedResult" nillable="true" type="q14:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateRegistered">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q15="http://esedo.nitec.kz/service/model/notification" minOccurs="0" name="data" nillable="true" type="q15:stateRegistered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateRegisteredResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q16="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendStateRegisteredResult" nillable="true" type="q16:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateStartProcessResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q17="http://esedo.nitec.kz/service/model/notification" minOccurs="0" name="data" nillable="true" type="q17:stateStartProcessResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateStartProcessResponseResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q18="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendStateStartProcessResponseResult" nillable="true" type="q18:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendDocAppeal">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q19="http://esedo.nitec.kz/service/model/document" minOccurs="0" name="data" nillable="true" type="q19:docAppeal" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendDocAppealResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q20="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendDocAppealResult" nillable="true" type="q20:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendDocOL">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q21="http://esedo.nitec.kz/service/model/document" minOccurs="0" name="data" nillable="true" type="q21:docOL" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendDocOLResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q22="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendDocOLResult" nillable="true" type="q22:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendDocSection">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q23="http://esedo.nitec.kz/service/model/document" minOccurs="0" name="data" nillable="true" type="q23:docSection" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendDocSectionResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q24="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendDocSectionResult" nillable="true" type="q24:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateNewControl">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q25="http://esedo.nitec.kz/service/model/notification" minOccurs="0" name="data" nillable="true" type="q25:stateNewControl" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateNewControlResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q26="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendStateNewControlResult" nillable="true" type="q26:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateProlongExDate">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q27="http://esedo.nitec.kz/service/model/notification" minOccurs="0" name="data" nillable="true" type="q27:stateProlongExDate" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateProlongExDateResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q28="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendStateProlongExDateResult" nillable="true" type="q28:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateNewExDate">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q29="http://esedo.nitec.kz/service/model/notification" minOccurs="0" name="data" nillable="true" type="q29:stateNewExDate" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateNewExDateResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q30="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendStateNewExDateResult" nillable="true" type="q30:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateTakeOfControl">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q31="http://esedo.nitec.kz/service/model/notification" minOccurs="0" name="data" nillable="true" type="q31:stateTakeOfControl" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SendStateTakeOfControlResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q32="http://sed.isate.kz/service/model/document" minOccurs="0" name="SendStateTakeOfControlResult" nillable="true" type="q32:qujatGatewayDelivered" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+    <xs:schema xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="anyType" nillable="true" type="xs:anyType" />
+      <xs:element name="anyURI" nillable="true" type="xs:anyURI" />
+      <xs:element name="base64Binary" nillable="true" type="xs:base64Binary" />
+      <xs:element name="boolean" nillable="true" type="xs:boolean" />
+      <xs:element name="byte" nillable="true" type="xs:byte" />
+      <xs:element name="dateTime" nillable="true" type="xs:dateTime" />
+      <xs:element name="decimal" nillable="true" type="xs:decimal" />
+      <xs:element name="double" nillable="true" type="xs:double" />
+      <xs:element name="float" nillable="true" type="xs:float" />
+      <xs:element name="int" nillable="true" type="xs:int" />
+      <xs:element name="long" nillable="true" type="xs:long" />
+      <xs:element name="QName" nillable="true" type="xs:QName" />
+      <xs:element name="short" nillable="true" type="xs:short" />
+      <xs:element name="string" nillable="true" type="xs:string" />
+      <xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte" />
+      <xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt" />
+      <xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong" />
+      <xs:element name="unsignedShort" nillable="true" type="xs:unsignedShort" />
+      <xs:element name="char" nillable="true" type="tns:char" />
+      <xs:simpleType name="char">
+        <xs:restriction base="xs:int" />
+      </xs:simpleType>
+      <xs:element name="duration" nillable="true" type="tns:duration" />
+      <xs:simpleType name="duration">
+        <xs:restriction base="xs:duration">
+          <xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?" />
+          <xs:minInclusive value="-P10675199DT2H48M5.4775808S" />
+          <xs:maxInclusive value="P10675199DT2H48M5.4775807S" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:element name="guid" nillable="true" type="tns:guid" />
+      <xs:simpleType name="guid">
+        <xs:restriction base="xs:string">
+          <xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:attribute name="FactoryType" type="xs:QName" />
+      <xs:attribute name="Id" type="xs:ID" />
+      <xs:attribute name="Ref" type="xs:IDREF" />
+    </xs:schema>
+    <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://esedo.nitec.kz/service/model/document" elementFormDefault="qualified" targetNamespace="http://esedo.nitec.kz/service/model/document" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xs:complexType name="docOutgoing">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q1="http://esedo.nitec.kz/service/model" base="q1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="appendCount" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="authorNameKz" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="authorNameRu" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="carrierType" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="character" type="xs:long" />
+              <xs:element minOccurs="0" name="characterSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="controlTypeOuterCode" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeOuterNameKz" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeOuterNameRu" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="docDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="docDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="docKind" type="xs:long" />
+              <xs:element minOccurs="0" name="docKindSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="docLang" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="docNo" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="docNoR" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="docRecPostKz" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="docRecPostRu" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="docToNumber" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="documentReceiverKz" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="documentReceiverRu" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="documentSectionId" nillable="true" type="xs:string" />
+              <xs:element xmlns:q2="http://esedo.nitec.kz/service/model/extension/eecbParts" minOccurs="0" name="eecbDocumentMetadata" nillable="true" type="q2:EECBDocumentMetadata" />
+              <xs:element minOccurs="0" name="employeePhone" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="executionDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="executionDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="executor" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="idPortalInternalSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="outTime" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="outTimeSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="portalSign" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="preparedDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="preparedDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="resolutionText" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignData" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignEnabled" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="sectionId" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="sheetCount" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="signerNameKz" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="signerNameRu" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" nillable="true" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="docOutgoing" nillable="true" type="tns:docOutgoing" />
+      <xs:complexType name="docAppeal">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q3="http://esedo.nitec.kz/service/model" base="q3:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="address" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="correspondentSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="deliveryDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="documentTypeSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="idPortalInternalSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="outDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="correspondent" type="xs:long" />
+              <xs:element minOccurs="0" name="deliveryDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="documentType" type="xs:long" />
+              <xs:element minOccurs="0" name="email" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="juridicallyName" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="middlename" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="outDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="outNumber" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="phone" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="sign" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="surname" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="timeStampData" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="ocspData" nillable="true" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="docAppeal" nillable="true" type="tns:docAppeal" />
+      <xs:complexType name="docOL">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q4="http://esedo.nitec.kz/service/model" base="q4:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="address" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="characterSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="deliveryDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="docDateRSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="docKindSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="documentTypeSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="executionDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="idPortalInternalSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="preparedDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="regDateOLSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="socialOrderSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="appendCount" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="carrierType" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="character" type="xs:long" />
+              <xs:element minOccurs="0" name="citizenship" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeOuterCode" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeOuterNameKz" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeOuterNameRu" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="deliveryDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="docDateR" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="docKind" type="xs:long" />
+              <xs:element minOccurs="0" name="docLang" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="docNoR" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="docReqAuthor" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="documentType" type="xs:long" />
+              <xs:element minOccurs="0" name="email" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="executionDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="juridicallyName" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="middlename" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="note" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="phone" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="portalSign" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="preparedDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="regDateOL" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="regNumberOL" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="region" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignData" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignEnabled" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="sheetCount" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="signerNameKz" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="signerNameRu" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="socialOrder" type="xs:long" />
+              <xs:element minOccurs="0" name="surname" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="uniqueNumber" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" nillable="true" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="docOL" nillable="true" type="tns:docOL" />
+      <xs:complexType name="docSection">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q5="http://esedo.nitec.kz/service/model" base="q5:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="carrierType" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="characterSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="docDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="docKindSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="executionDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="inDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="preparedDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="character" type="xs:long" />
+              <xs:element minOccurs="0" name="controlTypeCode" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameKz" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameRu" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="dirordNumberKpm" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="docDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="docKind" type="xs:long" />
+              <xs:element minOccurs="0" name="docNumber" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="docSection1" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="documentSectionId" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="employeePhone" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="executionDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="executor" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="inDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="preparedDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="sectionId" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="signerNameRu" nillable="true" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="docSection" nillable="true" type="tns:docSection" />
+    </xs:schema>
+    <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://esedo.nitec.kz/service/model" elementFormDefault="qualified" targetNamespace="http://esedo.nitec.kz/service/model" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xs:complexType name="message">
+        <xs:sequence>
+          <xs:element xmlns:q1="http://esedo.nitec.kz/service/model/extension" minOccurs="0" name="attachments" nillable="true" type="q1:ArrayOfattachment" />
+          <xs:element xmlns:q2="http://esedo.nitec.kz/service/model/extension" minOccurs="0" name="metadataSystem" nillable="true" type="q2:metadataSystem" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="message" nillable="true" type="tns:message" />
+    </xs:schema>
+    <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://esedo.nitec.kz/service/model/extension" elementFormDefault="qualified" targetNamespace="http://esedo.nitec.kz/service/model/extension" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xs:complexType name="ArrayOfattachment">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="attachment" nillable="true" type="tns:attachment" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfattachment" nillable="true" type="tns:ArrayOfattachment" />
+      <xs:complexType name="attachment">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="fileIdentifier" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="attachment" nillable="true" type="tns:attachment" />
+      <xs:complexType name="metadataSystem">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="activityId" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="from" type="xs:long" />
+          <xs:element minOccurs="0" name="fromSpecified" type="xs:boolean" />
+          <xs:element minOccurs="0" name="href" nillable="true" type="xs:string" />
+          <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System" minOccurs="0" name="performers" nillable="true" type="q1:ArrayOfNullableOfInt64" />
+          <xs:element minOccurs="0" name="senderOrg" type="xs:long" />
+          <xs:element minOccurs="0" name="senderOrgSpecified" type="xs:boolean" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="metadataSystem" nillable="true" type="tns:metadataSystem" />
+    </xs:schema>
+    <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/System" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/System" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xs:complexType name="ArrayOfNullableOfInt64">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="long" nillable="true" type="xs:long" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfNullableOfInt64" nillable="true" type="tns:ArrayOfNullableOfInt64" />
+      <xs:complexType name="NullableOfInt64">
+        <xs:annotation>
+          <xs:appinfo>
+            <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+          </xs:appinfo>
+        </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="0" name="HasValue" type="xs:boolean" />
+          <xs:element minOccurs="0" name="Value" type="xs:long" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="NullableOfInt64" nillable="true" type="tns:NullableOfInt64" />
+      <xs:complexType name="ArrayOfArrayOfObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfArrayOfObject" nillable="true" type="tns:ArrayOfArrayOfObject" />
+    </xs:schema>
+    <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://esedo.nitec.kz/service/model/extension/eecbParts" elementFormDefault="qualified" targetNamespace="http://esedo.nitec.kz/service/model/extension/eecbParts" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xs:complexType name="EECBDocumentMetadata">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Publication" nillable="true" type="tns:ArrayOfEECBPublication" />
+          <xs:element minOccurs="0" name="approvalData" nillable="true" type="tns:ArrayOfEECBApprovalData" />
+          <xs:element minOccurs="0" name="approvalPlace" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="developingStateAgency" nillable="true" type="xs:long" />
+          <xs:element minOccurs="0" name="judicialAuthority" type="xs:long" />
+          <xs:element minOccurs="0" name="judiciaryApprovalDate" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="judiciaryDocNumber" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="region" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="titleKz" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="titleRu" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="EECBDocumentMetadata" nillable="true" type="tns:EECBDocumentMetadata" />
+      <xs:complexType name="ArrayOfEECBApprovalData">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="EECBApprovalData" nillable="true" type="tns:EECBApprovalData" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfEECBApprovalData" nillable="true" type="tns:ArrayOfEECBApprovalData" />
+      <xs:complexType name="EECBApprovalData">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="approvingStateAgency" type="xs:long" />
+          <xs:element minOccurs="0" name="stateAgencyApprovalDate" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="stateAgencyDocNumber" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="EECBApprovalData" nillable="true" type="tns:EECBApprovalData" />
+      <xs:complexType name="ArrayOfEECBPublication">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="EECBPublication" nillable="true" type="tns:EECBPublication" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfEECBPublication" nillable="true" type="tns:ArrayOfEECBPublication" />
+      <xs:complexType name="EECBPublication">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="datePub" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="issuePub" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="sourcePub" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="EECBPublication" nillable="true" type="tns:EECBPublication" />
+    </xs:schema>
+    <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://sed.isate.kz/service/model/document" elementFormDefault="qualified" targetNamespace="http://sed.isate.kz/service/model/document" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xs:complexType name="qujatGatewayDelivered">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q1="http://esedo.nitec.kz/service/model" base="q1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="error" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="status" type="xs:int" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="qujatGatewayDelivered" nillable="true" type="tns:qujatGatewayDelivered" />
+      <xs:complexType name="QGDocument">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q2="http://esedo.nitec.kz/service/model/document" base="q2:docOutgoing">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="properties" nillable="true" type="tns:ArrayOfsedProperty" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="QGDocument" nillable="true" type="tns:QGDocument" />
+      <xs:complexType name="ArrayOfsedProperty">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="sedProperty" nillable="true" type="tns:sedProperty" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfsedProperty" nillable="true" type="tns:ArrayOfsedProperty" />
+      <xs:complexType name="sedProperty">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="key" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="value" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="sedProperty" nillable="true" type="tns:sedProperty" />
+    </xs:schema>
+    <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://isate.kz/qujatgateway/tengri-bpm-web-service" elementFormDefault="qualified" targetNamespace="http://isate.kz/qujatgateway/tengri-bpm-web-service" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xs:complexType name="DocumentRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="requestDate" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="sender" nillable="true" type="xs:string" />
+          <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="receiver" nillable="true" type="q1:ArrayOfstring" />
+          <xs:element xmlns:q2="http://esedo.nitec.kz/service/model" minOccurs="0" name="data" nillable="true" type="q2:message" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="DocumentRequest" nillable="true" type="tns:DocumentRequest" />
+    </xs:schema>
+    <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://esedo.nitec.kz/service/model/notification" elementFormDefault="qualified" targetNamespace="http://esedo.nitec.kz/service/model/notification" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xs:complexType name="stateNotValid">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q1="http://esedo.nitec.kz/service/model" base="q1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="dateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="idPortalInternalSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="isValidReason" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignNotifData" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" nillable="true" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="stateNotValid" nillable="true" type="tns:stateNotValid" />
+      <xs:complexType name="stateExecution">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q2="http://esedo.nitec.kz/service/model" base="q2:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="dateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="execDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="execDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="executive" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="executivePhone" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="idPortalInternalSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="userUin" nillable="true" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="stateExecution" nillable="true" type="tns:stateExecution" />
+      <xs:complexType name="stateDelivered">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q3="http://esedo.nitec.kz/service/model" base="q3:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="dateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="idPortalInternalSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="userUin" nillable="true" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="stateDelivered" nillable="true" type="tns:stateDelivered" />
+      <xs:complexType name="stateFinished">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q4="http://esedo.nitec.kz/service/model" base="q4:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="author" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="idPortalInternalSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="realDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="realDateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="resultCode" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="resultText" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" nillable="true" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="stateFinished" nillable="true" type="tns:stateFinished" />
+      <xs:complexType name="stateRegistered">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q5="http://esedo.nitec.kz/service/model" base="q5:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="dateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="idPortalInternalSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="regNo" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignNotifData" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" nillable="true" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="stateRegistered" nillable="true" type="tns:stateRegistered" />
+      <xs:complexType name="stateStartProcessResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q6="http://esedo.nitec.kz/service/model" base="q6:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="dateSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="idPortalInternalSpecified" type="xs:boolean" />
+              <xs:element minOccurs="0" name="userUin" nillable="true" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="stateStartProcessResponse" nillable="true" type="tns:stateStartProcessResponse" />
+      <xs:complexType name="stateNewControl">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q7="http://esedo.nitec.kz/service/model" base="q7:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="controlTypeCode" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameKz" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameRu" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="execDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="execDateSpecified" type="xs:boolean" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="stateNewControl" nillable="true" type="tns:stateNewControl" />
+      <xs:complexType name="stateProlongExDate">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q8="http://esedo.nitec.kz/service/model" base="q8:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="controlTypeCode" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameKz" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameRu" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="execDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="execDateSpecified" type="xs:boolean" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="stateProlongExDate" nillable="true" type="tns:stateProlongExDate" />
+      <xs:complexType name="stateNewExDate">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q9="http://esedo.nitec.kz/service/model" base="q9:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="controlTypeCode" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameKz" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameRu" nillable="true" type="xs:string" />
+              <xs:element minOccurs="0" name="execDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="execDateSpecified" type="xs:boolean" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="stateNewExDate" nillable="true" type="tns:stateNewExDate" />
+      <xs:complexType name="stateTakeOfControl">
+        <xs:complexContent mixed="false">
+          <xs:extension xmlns:q10="http://esedo.nitec.kz/service/model" base="q10:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="execDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="execDateSpecified" type="xs:boolean" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="stateTakeOfControl" nillable="true" type="tns:stateTakeOfControl" />
+    </xs:schema>
+    <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xs:complexType name="ArrayOfstring">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfstring" nillable="true" type="tns:ArrayOfstring" />
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="QGServiceServ_SendDocOutgoing_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendDocOutgoing" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendDocOutgoing_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendDocOutgoingResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SaveDocumentToBPM_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveDocumentToBPM" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SaveDocumentToBPM_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveDocumentToBPMResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendUniversalMessage_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendUniversalMessage" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendUniversalMessage_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendUniversalMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateNotValid_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateNotValid" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateNotValid_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateNotValidResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateExecution_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateExecution" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateExecution_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateExecutionResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateDelivered_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateDelivered" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateDelivered_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateDeliveredResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateFinished_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateFinished" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateFinished_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateFinishedResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateRegistered_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateRegistered" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateRegistered_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateRegisteredResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateStartProcessResponse_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateStartProcessResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateStartProcessResponse_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateStartProcessResponseResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendDocAppeal_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendDocAppeal" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendDocAppeal_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendDocAppealResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendDocOL_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendDocOL" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendDocOL_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendDocOLResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendDocSection_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendDocSection" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendDocSection_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendDocSectionResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateNewControl_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateNewControl" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateNewControl_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateNewControlResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateProlongExDate_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateProlongExDate" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateProlongExDate_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateProlongExDateResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateNewExDate_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateNewExDate" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateNewExDate_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateNewExDateResponse" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateTakeOfControl_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateTakeOfControl" />
+  </wsdl:message>
+  <wsdl:message name="QGServiceServ_SendStateTakeOfControl_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendStateTakeOfControlResponse" />
+  </wsdl:message>
+  <wsdl:portType name="QGServiceServ">
+    <wsdl:operation name="SendDocOutgoing">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendDocOutgoing" message="tns:QGServiceServ_SendDocOutgoing_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendDocOutgoingResponse" message="tns:QGServiceServ_SendDocOutgoing_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveDocumentToBPM">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SaveDocumentToBPM" message="tns:QGServiceServ_SaveDocumentToBPM_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SaveDocumentToBPMResponse" message="tns:QGServiceServ_SaveDocumentToBPM_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendUniversalMessage">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendUniversalMessage" message="tns:QGServiceServ_SendUniversalMessage_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendUniversalMessageResponse" message="tns:QGServiceServ_SendUniversalMessage_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStateNotValid">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateNotValid" message="tns:QGServiceServ_SendStateNotValid_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateNotValidResponse" message="tns:QGServiceServ_SendStateNotValid_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStateExecution">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateExecution" message="tns:QGServiceServ_SendStateExecution_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateExecutionResponse" message="tns:QGServiceServ_SendStateExecution_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStateDelivered">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateDelivered" message="tns:QGServiceServ_SendStateDelivered_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateDeliveredResponse" message="tns:QGServiceServ_SendStateDelivered_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStateFinished">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateFinished" message="tns:QGServiceServ_SendStateFinished_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateFinishedResponse" message="tns:QGServiceServ_SendStateFinished_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStateRegistered">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateRegistered" message="tns:QGServiceServ_SendStateRegistered_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateRegisteredResponse" message="tns:QGServiceServ_SendStateRegistered_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStateStartProcessResponse">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateStartProcessResponse" message="tns:QGServiceServ_SendStateStartProcessResponse_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateStartProcessResponseResponse" message="tns:QGServiceServ_SendStateStartProcessResponse_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendDocAppeal">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendDocAppeal" message="tns:QGServiceServ_SendDocAppeal_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendDocAppealResponse" message="tns:QGServiceServ_SendDocAppeal_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendDocOL">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendDocOL" message="tns:QGServiceServ_SendDocOL_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendDocOLResponse" message="tns:QGServiceServ_SendDocOL_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendDocSection">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendDocSection" message="tns:QGServiceServ_SendDocSection_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendDocSectionResponse" message="tns:QGServiceServ_SendDocSection_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStateNewControl">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateNewControl" message="tns:QGServiceServ_SendStateNewControl_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateNewControlResponse" message="tns:QGServiceServ_SendStateNewControl_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStateProlongExDate">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateProlongExDate" message="tns:QGServiceServ_SendStateProlongExDate_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateProlongExDateResponse" message="tns:QGServiceServ_SendStateProlongExDate_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStateNewExDate">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateNewExDate" message="tns:QGServiceServ_SendStateNewExDate_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateNewExDateResponse" message="tns:QGServiceServ_SendStateNewExDate_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendStateTakeOfControl">
+      <wsdl:input wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateTakeOfControl" message="tns:QGServiceServ_SendStateTakeOfControl_InputMessage" />
+      <wsdl:output wsam:Action="http://qg.sync.isate.kz/QGServiceServ/SendStateTakeOfControlResponse" message="tns:QGServiceServ_SendStateTakeOfControl_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding" type="tns:QGServiceServ">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SendDocOutgoing">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendDocOutgoing" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveDocumentToBPM">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SaveDocumentToBPM" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendUniversalMessage">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendUniversalMessage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendStateNotValid">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendStateNotValid" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendStateExecution">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendStateExecution" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendStateDelivered">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendStateDelivered" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendStateFinished">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendStateFinished" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendStateRegistered">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendStateRegistered" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendStateStartProcessResponse">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendStateStartProcessResponse" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendDocAppeal">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendDocAppeal" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendDocOL">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendDocOL" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendDocSection">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendDocSection" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendStateNewControl">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendStateNewControl" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendStateProlongExDate">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendStateProlongExDate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendStateNewExDate">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendStateNewExDate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendStateTakeOfControl">
+      <soap:operation soapAction="http://qg.sync.isate.kz/QGServiceServ/SendStateTakeOfControl" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="QGServiceServ">
+    <wsdl:port name="BasicHttpBinding" binding="tns:BasicHttpBinding">
+      <soap:address location="http://172.18.1.78:5000/qgserviceserv" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

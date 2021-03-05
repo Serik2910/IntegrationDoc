@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tns="http://isate.kz/ensi/dictionary" xmlns:sch2="http://isate.kz/ensi/wrapper" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:sch1="http://isate.kz/ensi/entity" xmlns:sch0="http://isate.kz/ensi/dictionary" targetNamespace="http://isate.kz/ensi/dictionary" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema xmlns:nsi="http://isate.kz/ensi/dictionary" elementFormDefault="qualified" targetNamespace="http://isate.kz/ensi/dictionary" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="GetDictionaryRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="currentDate" nillable="true" type="xs:dateTime" />
+            <xs:element maxOccurs="unbounded" name="dictionaries" nillable="true" type="nsi:dictionary" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetDictionaryResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="currentDate" type="xs:dateTime" />
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="data" nillable="true" type="xs:anyType" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="dictionary">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="name" type="xs:string" />
+          <xs:element name="lastUpdateDate" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema targetNamespace="http://isate.kz/ensi/entity" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="ControlType">
+        <xs:sequence>
+          <xs:element name="Id" type="xs:integer" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="name_ru" type="xs:string" />
+          <xs:element name="name_kz" type="xs:string" />
+          <xs:element name="code" type="xs:string" />
+          <xs:element minOccurs="0" name="days" type="xs:string" />
+          <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DocumentCharacter">
+        <xs:sequence>
+          <xs:element name="Id" type="xs:integer" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="name_ru" type="xs:string" />
+          <xs:element name="name_kz" type="xs:string" />
+          <xs:element name="code" type="xs:string" />
+          <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DocumentReason">
+        <xs:sequence>
+          <xs:element name="Id" type="xs:integer" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="name_ru" type="xs:string" />
+          <xs:element name="name_kz" type="xs:string" />
+          <xs:element name="code" type="xs:string" />
+          <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DocumentType">
+        <xs:sequence>
+          <xs:element name="Id" type="xs:integer" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="name_ru" type="xs:string" />
+          <xs:element name="name_kz" type="xs:string" />
+          <xs:element name="code" type="xs:string" />
+          <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ExecutionResult">
+        <xs:sequence>
+          <xs:element name="Id" type="xs:integer" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="name_ru" type="xs:string" />
+          <xs:element name="name_kz" type="xs:string" />
+          <xs:element name="code" type="xs:string" />
+          <xs:element minOccurs="0" name="category" type="xs:string" />
+          <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Organization">
+        <xs:sequence>
+          <xs:element name="Id" type="xs:integer" />
+          <xs:element name="Parent" type="xs:integer" />
+          <xs:element name="ChildsCount" type="xs:integer" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="name_ru" type="xs:string" />
+          <xs:element name="name_kz" type="xs:string" />
+          <xs:element name="abbr_ru" type="xs:string" />
+          <xs:element name="abbr_kz" type="xs:string" />
+          <xs:element name="member" nillable="true" type="xs:decimal" />
+          <xs:element name="code" type="xs:string" />
+          <xs:element name="isEsedo" type="xs:string" />
+          <xs:element name="isReady" type="xs:string" />
+          <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="OrganizationType">
+        <xs:sequence>
+          <xs:element name="Id" type="xs:integer" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="name_ru" type="xs:string" />
+          <xs:element name="name_kz" type="xs:string" />
+          <xs:element name="code" type="xs:string" />
+          <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="PeopleCategory">
+        <xs:sequence>
+          <xs:element name="Id" type="xs:integer" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="name_ru" type="xs:string" />
+          <xs:element name="name_kz" type="xs:string" />
+          <xs:element name="code" type="xs:string" />
+          <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Post">
+        <xs:sequence>
+          <xs:element name="Id" type="xs:integer" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="name_ru" type="xs:string" />
+          <xs:element name="name_kz" type="xs:string" />
+          <xs:element name="code" type="xs:string" />
+          <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="PRAction">
+        <xs:sequence>
+          <xs:element name="Id" type="xs:integer" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="name_ru" type="xs:string" />
+          <xs:element name="name_kz" type="xs:string" />
+          <xs:element name="code" type="xs:string" />
+          <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Region">
+        <xs:sequence>
+          <xs:element name="Id" type="xs:integer" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="name_ru" type="xs:string" />
+          <xs:element name="name_kz" type="xs:string" />
+          <xs:element name="code" type="xs:string" />
+          <xs:element minOccurs="0" name="region_type" type="xs:string" />
+          <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns:ns1="http://isate.kz/ensi/entity" targetNamespace="http://isate.kz/ensi/wrapper" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://isate.kz/ensi/entity" />
+      <xs:complexType name="ControlTypeWrapper">
+        <xs:sequence>
+          <xs:element name="entityName" type="xs:string" />
+          <xs:element minOccurs="0" name="numberOfUpdates" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="NSI_CONTROL_TYPE" type="ns1:ControlType" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DocumentCharacterWrapper">
+        <xs:sequence>
+          <xs:element name="entityName" type="xs:string" />
+          <xs:element minOccurs="0" name="numberOfUpdates" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="NSI_CHARACTERS" type="ns1:DocumentCharacter" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DocumentReasonWrapper">
+        <xs:sequence>
+          <xs:element name="entityName" type="xs:string" />
+          <xs:element minOccurs="0" name="numberOfUpdates" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="NSI_REASONS" type="ns1:DocumentReason" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DocumentTypeWrapper">
+        <xs:sequence>
+          <xs:element name="entityName" type="xs:string" />
+          <xs:element minOccurs="0" name="numberOfUpdates" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="NSI_DOC_TYPE" type="ns1:DocumentType" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ExecutionResultWrapper">
+        <xs:sequence>
+          <xs:element name="entityName" type="xs:string" />
+          <xs:element minOccurs="0" name="numberOfUpdates" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="NSI_EXRES_TYPE" type="ns1:ExecutionResult" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="OrganizationWrapper">
+        <xs:sequence>
+          <xs:element name="entityName" type="xs:string" />
+          <xs:element minOccurs="0" name="numberOfUpdates" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="NSI_ORG" type="ns1:Organization" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="OrganizationTypeWrapper">
+        <xs:sequence>
+          <xs:element name="entityName" type="xs:string" />
+          <xs:element minOccurs="0" name="numberOfUpdates" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="NSI_ORG_TYPES" type="ns1:OrganizationType" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="PeopleCategoryWrapper">
+        <xs:sequence>
+          <xs:element name="entityName" type="xs:string" />
+          <xs:element minOccurs="0" name="numberOfUpdates" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="NSI_APPLICANT" type="ns1:PeopleCategory" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="PostWrapper">
+        <xs:sequence>
+          <xs:element name="entityName" type="xs:string" />
+          <xs:element minOccurs="0" name="numberOfUpdates" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="NSI_POS_TYPE" type="ns1:Post" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="PRActionWrapper">
+        <xs:sequence>
+          <xs:element name="entityName" type="xs:string" />
+          <xs:element minOccurs="0" name="numberOfUpdates" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="NSI_ACTIONS" type="ns1:PRAction" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RegionWrapper">
+        <xs:sequence>
+          <xs:element name="entityName" type="xs:string" />
+          <xs:element minOccurs="0" name="numberOfUpdates" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="NSI_REGIONS" type="ns1:Region" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="GetDictionaryRequest">
+    <wsdl:part name="GetDictionaryRequest" element="sch0:GetDictionaryRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetDictionaryResponse">
+    <wsdl:part name="GetDictionaryResponse" element="sch0:GetDictionaryResponse" />
+  </wsdl:message>
+  <wsdl:portType name="DictionaryPort">
+    <wsdl:operation name="GetDictionary">
+      <wsdl:input name="GetDictionaryRequest" message="sch0:GetDictionaryRequest" />
+      <wsdl:output name="GetDictionaryResponse" message="sch0:GetDictionaryResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DictionaryPortSoap11" type="sch0:DictionaryPort">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetDictionary">
+      <soap:operation soapAction="" />
+      <wsdl:input name="GetDictionaryRequest">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetDictionaryResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DictionaryPortService">
+    <wsdl:port name="DictionaryPortSoap11" binding="sch0:DictionaryPortSoap11">
+      <soap:address location="https://qujatgateway.kz/ensi-sync" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

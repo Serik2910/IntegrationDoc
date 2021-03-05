@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tns="http://isate.kz/qujatgateway/tengri-bpm-web-service" xmlns:sch0="http://isate.kz/hed/model" xmlns:sch2="http://bip.bee.kz/SyncChannel/v10/Types/Response" xmlns:sch4="http://bip.bee.kz/SyncChannel/v10/Types" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:sch1="http://bip.bee.kz/common/v10/Types" xmlns:sch3="http://bip.bee.kz/SyncChannel/v10/Types/Request" targetNamespace="http://isate.kz/qujatgateway/tengri-bpm-web-service" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema xmlns:ns2="http://bip.bee.kz/SyncChannel/v10/Types/Request" xmlns:ns3="http://bip.bee.kz/SyncChannel/v10/Types/Response" targetNamespace="http://isate.kz/hed/model" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://bip.bee.kz/SyncChannel/v10/Types/Request" />
+      <xs:import namespace="http://bip.bee.kz/SyncChannel/v10/Types/Response" />
+      <xs:element name="GetMessageRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="request" type="ns2:SyncSendMessageRequest" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetMessageResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="response" type="ns3:SyncSendMessageResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+    <xs:schema targetNamespace="http://bip.bee.kz/common/v10/Types" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="SenderInfo">
+        <xs:sequence>
+          <xs:element name="senderId" type="xs:string" />
+          <xs:element minOccurs="0" name="password" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Property">
+        <xs:sequence>
+          <xs:element name="key" type="xs:string" />
+          <xs:element name="value" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="StatusInfo">
+        <xs:sequence>
+          <xs:element name="code" type="xs:string" />
+          <xs:element name="message" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns:tns="http://bip.bee.kz/SyncChannel/v10/Types/Response" xmlns:ns1="http://bip.bee.kz/common/v10/Types" xmlns:ns2="http://bip.bee.kz/SyncChannel/v10/Types" targetNamespace="http://bip.bee.kz/SyncChannel/v10/Types/Response" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://bip.bee.kz/common/v10/Types" />
+      <xs:import namespace="http://bip.bee.kz/SyncChannel/v10/Types" />
+      <xs:complexType name="SyncSendMessageResponse">
+        <xs:sequence>
+          <xs:element name="responseInfo" type="ns2:SyncMessageInfoResponse" />
+          <xs:element name="responseData" type="tns:ResponseData" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ResponseData">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="data" type="xs:anyType" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns:tns="http://bip.bee.kz/SyncChannel/v10/Types/Request" xmlns:ns1="http://bip.bee.kz/common/v10/Types" xmlns:ns2="http://bip.bee.kz/SyncChannel/v10/Types" targetNamespace="http://bip.bee.kz/SyncChannel/v10/Types/Request" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://bip.bee.kz/common/v10/Types" />
+      <xs:import namespace="http://bip.bee.kz/SyncChannel/v10/Types" />
+      <xs:complexType name="SyncSendMessageRequest">
+        <xs:sequence>
+          <xs:element name="requestInfo" type="ns2:SyncMessageInfo" />
+          <xs:element name="requestData" type="tns:RequestData" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RequestData">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="data" type="xs:anyType" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns:ns1="http://bip.bee.kz/common/v10/Types" targetNamespace="http://bip.bee.kz/SyncChannel/v10/Types" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://bip.bee.kz/common/v10/Types" />
+      <xs:complexType name="SyncMessageInfo">
+        <xs:sequence>
+          <xs:element name="messageId" type="xs:string" />
+          <xs:element minOccurs="0" name="correlationId" type="xs:string" />
+          <xs:element name="serviceId" type="xs:string" />
+          <xs:element name="messageDate" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="routeId" type="xs:string" />
+          <xs:element name="sender" type="ns1:SenderInfo" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="properties" nillable="true" type="ns1:Property" />
+          <xs:element minOccurs="0" name="sessionId" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="SyncMessageInfoResponse">
+        <xs:sequence>
+          <xs:element name="messageId" type="xs:string" />
+          <xs:element minOccurs="0" name="correlationId" type="xs:string" />
+          <xs:element name="responseDate" type="xs:dateTime" />
+          <xs:element name="status" type="ns1:StatusInfo" />
+          <xs:element minOccurs="0" name="sessionId" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="GetMessageResponse">
+    <wsdl:part name="GetMessageResponse" element="sch0:GetMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMessageRequest">
+    <wsdl:part name="GetMessageRequest" element="sch0:GetMessageRequest" />
+  </wsdl:message>
+  <wsdl:portType name="ProcessorPort">
+    <wsdl:operation name="GetMessage">
+      <wsdl:input name="GetMessageRequest" message="tns:GetMessageRequest" />
+      <wsdl:output name="GetMessageResponse" message="tns:GetMessageResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ProcessorPortSoap11" type="tns:ProcessorPort">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetMessage">
+      <soap:operation soapAction="" />
+      <wsdl:input name="GetMessageRequest">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetMessageResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ProcessorPortService">
+    <wsdl:port name="ProcessorPortSoap11" binding="tns:ProcessorPortSoap11">
+      <soap:address location="http://10.7.6.12:9191/ws" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

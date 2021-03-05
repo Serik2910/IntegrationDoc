@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://isate.kz/qujatgateway/tengri-bpm-web-service" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="getDocument" targetNamespace="http://isate.kz/qujatgateway/tengri-bpm-web-service" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema xmlns:ns1="http://esedo.nitec.kz/service/model" xmlns:tns="http://sed.isate.kz/service/model/document" xmlns:ns2="http://esedo.nitec.kz/service/model/document" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://sed.isate.kz/service/model/document" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://esedo.nitec.kz/service/model" />
+      <xs:import namespace="http://esedo.nitec.kz/service/model/document" />
+      <xs:complexType name="qujatGatewayDelivered">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element name="date" type="xs:dateTime" />
+              <xs:element name="status" type="xs:int" />
+              <xs:element minOccurs="0" name="error" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="QGDocument">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns2:docOutgoing">
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="properties" nillable="true" type="tns:sedProperty" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="sedProperty">
+        <xs:sequence>
+          <xs:element name="key" type="xs:string" />
+          <xs:element name="value" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://isate.kz/qujatgateway/tengri-bpm-web-service" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="getDocumentRequest">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="request" type="tns:DocumentRequest" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="getDocumentResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="response" type="tns:DocumentResponse" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="DocumentRequest">
+        <xs:sequence>
+          <xs:element name="requestDate" type="xs:dateTime" />
+          <xs:element name="sender" type="xs:string" />
+          <xs:element maxOccurs="unbounded" name="receiver" type="xs:string" />
+          <xs:element name="data" type="xs:anyType" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DocumentResponse">
+        <xs:sequence>
+          <xs:element name="responseDate" type="xs:dateTime" />
+          <xs:element name="data" type="xs:anyType" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns="http://esedo.nitec.kz/service/model/notification" xmlns:ns1="http://esedo.nitec.kz/service/model" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://esedo.nitec.kz/service/model/notification" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://esedo.nitec.kz/service/model" />
+      <xs:complexType name="stateExecution">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="execDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="executive" type="xs:string" />
+              <xs:element minOccurs="0" name="executivePhone" type="xs:string" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="userUin" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="stateNewControl">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="controlTypeCode" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameKz" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameRu" type="xs:string" />
+              <xs:element minOccurs="0" name="execDate" type="xs:dateTime" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="stateTakeOfControlWrong">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence />
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="stateProlongExDate">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="controlTypeCode" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameKz" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameRu" type="xs:string" />
+              <xs:element minOccurs="0" name="execDate" type="xs:dateTime" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="stateDelivered">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="userUin" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="stateRegistered">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="regNo" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignNotifData" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="stateTakeOfControl">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="execDate" type="xs:dateTime" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="stateNewExDate">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="controlTypeCode" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameKz" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameRu" type="xs:string" />
+              <xs:element minOccurs="0" name="execDate" type="xs:dateTime" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="stateStartProcessResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="description" type="xs:string" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="userUin" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="stateNewControlWrong">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence />
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="stateNotValid">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="date" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="isValidReason" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignNotifData" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="stateFinished">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="author" type="xs:string" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="realDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="resultCode" type="xs:string" />
+              <xs:element minOccurs="0" name="resultText" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns:tns="http://esedo.nitec.kz/service/model/extension/eecbParts" targetNamespace="http://esedo.nitec.kz/service/model/extension/eecbParts" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="EECBDocumentMetadata">
+        <xs:sequence>
+          <xs:element name="titleKz" type="xs:string" />
+          <xs:element name="titleRu" type="xs:string" />
+          <xs:element name="developingStateAgency" nillable="true" type="xs:long" />
+          <xs:element maxOccurs="unbounded" name="approvalData" nillable="true" type="tns:EECBApprovalData" />
+          <xs:element name="approvalPlace" type="xs:string" />
+          <xs:element name="judiciaryDocNumber" nillable="true" type="xs:string" />
+          <xs:element name="judiciaryApprovalDate" nillable="true" type="xs:date" />
+          <xs:element name="judicialAuthority" type="xs:long" />
+          <xs:element name="region" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="Publication" nillable="true" type="tns:EECBPublication" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="EECBApprovalData">
+        <xs:sequence>
+          <xs:element name="approvingStateAgency" type="xs:long" />
+          <xs:element name="stateAgencyDocNumber" type="xs:string" />
+          <xs:element name="stateAgencyApprovalDate" type="xs:date" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="EECBPublication">
+        <xs:sequence>
+          <xs:element name="sourcePub" nillable="true" type="xs:string" />
+          <xs:element name="issuePub" nillable="true" type="xs:string" />
+          <xs:element name="datePub" nillable="true" type="xs:date" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema targetNamespace="http://esedo.nitec.kz/service/model/extension" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="attachment">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="fileIdentifier" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="metadataSystem">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="activityId" type="xs:string" />
+          <xs:element minOccurs="0" name="from" type="xs:long" />
+          <xs:element minOccurs="0" name="href" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="performers" nillable="true" type="xs:long" />
+          <xs:element minOccurs="0" name="senderOrg" type="xs:long" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns="http://esedo.nitec.kz/service/model/document" xmlns:ns1="http://esedo.nitec.kz/service/model" xmlns:ns2="http://esedo.nitec.kz/service/model/extension/eecbParts" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://esedo.nitec.kz/service/model/document" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://esedo.nitec.kz/service/model" />
+      <xs:import namespace="http://esedo.nitec.kz/service/model/extension/eecbParts" />
+      <xs:complexType name="docOL">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="address" type="xs:string" />
+              <xs:element minOccurs="0" name="appendCount" type="xs:string" />
+              <xs:element minOccurs="0" name="carrierType" type="xs:string" />
+              <xs:element minOccurs="0" name="character" type="xs:long" />
+              <xs:element minOccurs="0" name="citizenship" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeOuterCode" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeOuterNameKz" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeOuterNameRu" type="xs:string" />
+              <xs:element minOccurs="0" name="deliveryDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="description" type="xs:string" />
+              <xs:element minOccurs="0" name="docDateR" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="docKind" type="xs:long" />
+              <xs:element minOccurs="0" name="docLang" type="xs:string" />
+              <xs:element minOccurs="0" name="docNoR" type="xs:string" />
+              <xs:element minOccurs="0" name="docReqAuthor" type="xs:string" />
+              <xs:element minOccurs="0" name="documentType" type="xs:long" />
+              <xs:element minOccurs="0" name="email" type="xs:string" />
+              <xs:element minOccurs="0" name="executionDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="juridicallyName" type="xs:string" />
+              <xs:element minOccurs="0" name="middlename" type="xs:string" />
+              <xs:element minOccurs="0" name="name" type="xs:string" />
+              <xs:element minOccurs="0" name="note" type="xs:string" />
+              <xs:element minOccurs="0" name="phone" type="xs:string" />
+              <xs:element minOccurs="0" name="portalSign" type="xs:string" />
+              <xs:element minOccurs="0" name="preparedDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="regDateOL" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="regNumberOL" type="xs:string" />
+              <xs:element minOccurs="0" name="region" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignData" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignEnabled" type="xs:string" />
+              <xs:element minOccurs="0" name="sheetCount" type="xs:string" />
+              <xs:element minOccurs="0" name="signerNameKz" type="xs:string" />
+              <xs:element minOccurs="0" name="signerNameRu" type="xs:string" />
+              <xs:element minOccurs="0" name="socialOrder" type="xs:long" />
+              <xs:element minOccurs="0" name="surname" type="xs:string" />
+              <xs:element minOccurs="0" name="uniqueNumber" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="docSection">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="carrierType" type="xs:string" />
+              <xs:element minOccurs="0" name="character" type="xs:long" />
+              <xs:element minOccurs="0" name="controlTypeCode" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameKz" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeNameRu" type="xs:string" />
+              <xs:element minOccurs="0" name="description" type="xs:string" />
+              <xs:element minOccurs="0" name="dirordNumberKpm" type="xs:string" />
+              <xs:element minOccurs="0" name="docDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="docKind" type="xs:long" />
+              <xs:element minOccurs="0" name="docNumber" type="xs:string" />
+              <xs:element minOccurs="0" name="docSection" type="xs:string" />
+              <xs:element minOccurs="0" name="documentSectionId" type="xs:string" />
+              <xs:element minOccurs="0" name="employeePhone" type="xs:string" />
+              <xs:element minOccurs="0" name="executionDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="executor" type="xs:string" />
+              <xs:element minOccurs="0" name="inDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="preparedDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="sectionId" type="xs:string" />
+              <xs:element minOccurs="0" name="signerNameRu" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="docAppeal">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="address" type="xs:string" />
+              <xs:element minOccurs="0" name="correspondent" type="xs:long" />
+              <xs:element minOccurs="0" name="deliveryDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="description" type="xs:string" />
+              <xs:element minOccurs="0" name="documentType" type="xs:long" />
+              <xs:element minOccurs="0" name="email" type="xs:string" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="juridicallyName" type="xs:string" />
+              <xs:element minOccurs="0" name="middlename" type="xs:string" />
+              <xs:element minOccurs="0" name="name" type="xs:string" />
+              <xs:element minOccurs="0" name="outDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="outNumber" type="xs:string" />
+              <xs:element minOccurs="0" name="phone" type="xs:string" />
+              <xs:element minOccurs="0" name="sign" type="xs:string" />
+              <xs:element minOccurs="0" name="surname" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" type="xs:string" />
+              <xs:element minOccurs="0" name="timeStampData" type="xs:string" />
+              <xs:element minOccurs="0" name="ocspData" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="docOutgoing">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="appendCount" type="xs:string" />
+              <xs:element minOccurs="0" name="authorNameKz" type="xs:string" />
+              <xs:element minOccurs="0" name="authorNameRu" type="xs:string" />
+              <xs:element minOccurs="0" name="carrierType" type="xs:string" />
+              <xs:element minOccurs="0" name="character" type="xs:long" />
+              <xs:element minOccurs="0" name="controlTypeOuterCode" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeOuterNameKz" type="xs:string" />
+              <xs:element minOccurs="0" name="controlTypeOuterNameRu" type="xs:string" />
+              <xs:element minOccurs="0" name="description" type="xs:string" />
+              <xs:element minOccurs="0" name="docDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="docKind" type="xs:long" />
+              <xs:element minOccurs="0" name="docLang" type="xs:string" />
+              <xs:element minOccurs="0" name="docNo" type="xs:string" />
+              <xs:element minOccurs="0" name="docNoR" type="xs:string" />
+              <xs:element minOccurs="0" name="docRecPostKz" type="xs:string" />
+              <xs:element minOccurs="0" name="docRecPostRu" type="xs:string" />
+              <xs:element minOccurs="0" name="docToNumber" type="xs:string" />
+              <xs:element minOccurs="0" name="documentReceiverKz" type="xs:string" />
+              <xs:element minOccurs="0" name="documentReceiverRu" type="xs:string" />
+              <xs:element minOccurs="0" name="documentSectionId" type="xs:string" />
+              <xs:element minOccurs="0" name="employeePhone" type="xs:string" />
+              <xs:element minOccurs="0" name="executionDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="executor" type="xs:string" />
+              <xs:element minOccurs="0" name="idPortalInternal" type="xs:long" />
+              <xs:element minOccurs="0" name="outTime" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="portalSign" type="xs:string" />
+              <xs:element minOccurs="0" name="preparedDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="resolutionText" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignData" type="xs:string" />
+              <xs:element minOccurs="0" name="secondSignEnabled" type="xs:string" />
+              <xs:element minOccurs="0" name="sectionId" type="xs:string" />
+              <xs:element minOccurs="0" name="sheetCount" type="xs:string" />
+              <xs:element minOccurs="0" name="signerNameKz" type="xs:string" />
+              <xs:element minOccurs="0" name="signerNameRu" type="xs:string" />
+              <xs:element minOccurs="0" name="userUin" type="xs:string" />
+              <xs:element minOccurs="0" name="eecbDocumentMetadata" type="ns2:EECBDocumentMetadata" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns="http://esedo.nitec.kz/service/model/dictionary" xmlns:ns1="http://esedo.nitec.kz/service/model" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://esedo.nitec.kz/service/model/dictionary" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://esedo.nitec.kz/service/model" />
+      <xs:complexType name="dictionaryResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="createdDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="dictionaryType" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="dictionaryRequest">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="createdDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="dictionaryType" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="dictionaryElement">
+        <xs:complexContent mixed="false">
+          <xs:extension base="ns1:message">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="createdDate" type="xs:dateTime" />
+              <xs:element minOccurs="0" name="elementStatus" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns="http://esedo.nitec.kz/service/model" xmlns:ns1="http://esedo.nitec.kz/service/model/extension" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://esedo.nitec.kz/service/model" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://esedo.nitec.kz/service/model/extension" />
+      <xs:complexType name="message" abstract="true">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="attachments" nillable="true" type="ns1:attachment" />
+          <xs:element minOccurs="0" name="metadataSystem" type="ns1:metadataSystem" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getDocument">
+    <wsdl:part name="parameters" element="tns:getDocumentRequest" />
+  </wsdl:message>
+  <wsdl:message name="getDocumentResponse">
+    <wsdl:part name="parameters" element="tns:getDocumentResponse" />
+  </wsdl:message>
+  <wsdl:portType name="DocumentPort">
+    <wsdl:operation name="getDocument">
+      <wsdl:input name="getDocument" message="tns:getDocument" />
+      <wsdl:output name="getDocumentResponse" message="tns:getDocumentResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="getDocumentSoapBinding" type="tns:DocumentPort">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getDocument">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="getDocument">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getDocumentResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="getDocument">
+    <wsdl:port name="aPort" binding="tns:getDocumentSoapBinding">
+      <soap:address location="http://10.7.6.12:9192/ws/document-sender" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
