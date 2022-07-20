@@ -1,5 +1,6 @@
 ﻿using IntegrationDoc.DocReceiver;
 using IntegrationDoc.HedReference;
+using IntegrationDoc.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,7 @@ namespace IntegrationDoc
             ResponseFormat = WebMessageFormat.Xml,
             UriTemplate = "send_to_esedo")]
         DocSender.DocumentResponse SendToESEDO(BaiterekMessageOut baiterekMessage);
+
         [OperationContract]
         [WebInvoke(Method = "POST",
             RequestFormat = WebMessageFormat.Json,
@@ -33,6 +35,7 @@ namespace IntegrationDoc
             ResponseFormat = WebMessageFormat.Xml,
             UriTemplate = "send_to_esedo_files")]
         void SendToESEDOFiles(BaiterekMessageFiles baiterekMessageFiles);
+
         [OperationContract]
         [WebInvoke(Method = "POST",
             RequestFormat = WebMessageFormat.Json,
@@ -45,13 +48,6 @@ namespace IntegrationDoc
             ResponseFormat = WebMessageFormat.Xml,
             UriTemplate = "download_from_esedo_files")]
         string downloadFromESEDOFiles(BaiterekMessageFilesRequest baiterekMessageFilesRequest);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST",
-            RequestFormat = WebMessageFormat.Json,
-            ResponseFormat = WebMessageFormat.Xml,
-            UriTemplate = "send_to_esedo_docOL")]
-        DocSender.DocumentResponse SendToESEDODocOL(BaiterekMessagePEPOutOld orgMessagePEPOutOld);
 
         [OperationContract]
         [WebInvoke(Method = "POST",
@@ -72,18 +68,27 @@ namespace IntegrationDoc
            ResponseFormat = WebMessageFormat.Xml,
            UriTemplate = "send_state_not_valid")]
         DocSender.DocumentResponse sendStateNotValid(EsedoStateMessage state);
+
         [OperationContract]
         [WebInvoke(Method = "POST",
            RequestFormat = WebMessageFormat.Json,
            ResponseFormat = WebMessageFormat.Xml,
            UriTemplate = "send_state_finished")]
         DocSender.DocumentResponse sendStateFinished(EsedoStateMessage state);
+
         [OperationContract]
         [WebInvoke(Method = "POST",
            RequestFormat = WebMessageFormat.Json,
            ResponseFormat = WebMessageFormat.Xml,
            UriTemplate = "send_state_execution")]
         DocSender.DocumentResponse sendStateExecution(EsedoStateMessage state);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST",
+           RequestFormat = WebMessageFormat.Json,
+           ResponseFormat = WebMessageFormat.Xml,
+           UriTemplate = "word_doc_version")]
+        string wordDocVersion(WordBase64File wordFileBase64);
 
         [System.ServiceModel.OperationContractAttribute(Action = "http://qg.sync.isate.kz/QGServiceServ/SendUniversalMessage", 
             ReplyAction = "http://qg.sync.isate.kz/QGServiceServ/SendUniversalMessageResponse")]
@@ -93,12 +98,12 @@ namespace IntegrationDoc
             UriTemplate = "receive_from_esedoDOCQG")]
         qujatGatewayDelivered SendUniversalMessage(DocumentRequest request);
 
-        //[OperationContractAttribute(Action = "http://qg.sync.isate.kz/QGServiceServ/SendDocAppeal", ReplyAction = "http://qg.sync.isate.kz/QGServiceServ/SendDocAppealResponse")]
-        //[WebInvoke(Method = "POST",
-        //    RequestFormat = WebMessageFormat.Json,
-        //    ResponseFormat = WebMessageFormat.Json,
-        //    UriTemplate = "receive_from_esedoDOCAppeal")]
-        //qujatGatewayDelivered SendDocAppeal(IntegrationDoc.DocReceiver.docAppeal data);
+        [OperationContract]
+        [WebInvoke(Method = "POST",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            UriTemplate = "gateway_test")]
+        BaiterekMessageOutNew GatewayTest(BaiterekMessageOutNew baiterekMessage);
 
     }
 
@@ -112,6 +117,6 @@ namespace IntegrationDoc
             RequestFormat = WebMessageFormat.Xml,
             ResponseFormat = WebMessageFormat.Xml,
             UriTemplate = "notify_DB_update")]
-        NsiUpdate.GetDictionaryResponse GetDictionary(NsiUpdate.GetDictionaryRequest GetDictionaryRequest);
+        string GetDictionary(NsiSync.GetDictionaryRequest GetDictionaryRequest);
     }
-    }
+}

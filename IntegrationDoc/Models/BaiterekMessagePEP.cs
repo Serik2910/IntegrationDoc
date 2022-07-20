@@ -9,6 +9,8 @@ namespace IntegrationDoc
     {
         public string o_address { get; set; }
         public string o_correspondent { get; set; }
+        public string o_from { get; set; }
+
         public long o_character { get; set; }
         public string o_description { get; set; }
         public string o_date_out { get; set; }
@@ -25,10 +27,10 @@ namespace IntegrationDoc
         public string o_signatory { get; set; }
         public string o_subject { get; set; }
         public int o_type { get; set; }
-        public int o_doc_lang { get; set; }
-        public int o_doc_type { get; set; }
+        public string o_doc_lang { get; set; }
+        public long o_doc_type { get; set; }
         public string o_doc_number { get; set; }
-        public int o_country { get; set; }
+        public string o_rezidency { get; set; }
         public int o_locality { get; set; }
         public string o_date_end { get; set; }
         public string o_useruin { get; set; }
@@ -65,10 +67,10 @@ namespace IntegrationDoc
         public string o_signatory { get; set; }
         public string o_subject { get; set; }
         public int o_type { get; set; }
-        public int o_doc_lang { get; set; }
+        public string o_doc_lang { get; set; }
         public int o_doc_type { get; set; }
         public string o_doc_number { get; set; }
-        public int o_country { get; set; }
+        public string o_rezidency{ get; set; }
         public int o_locality { get; set; }
         public string o_date_end { get; set; }
         public string o_useruin { get; set; }

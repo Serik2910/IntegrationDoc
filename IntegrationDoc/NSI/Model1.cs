@@ -1,19 +1,17 @@
-namespace IntegrationDoc
-{
-    using System;
-    using System.Data.Entity;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
+using System.Linq;
 
+namespace IntegrationDoc.NSI
+{
     public partial class Model1 : DbContext
     {
         public Model1()
-            : base("name=Model12")
+            : base("name=Model11")
         {
         }
 
-        public virtual DbSet<doc_typeBaiterek> doc_typeBaiterek { get; set; }
-        public virtual DbSet<DocTypeMap> DocTypeMap { get; set; }
         public virtual DbSet<nsi_actions> nsi_actions { get; set; }
         public virtual DbSet<nsi_applicant> nsi_applicant { get; set; }
         public virtual DbSet<nsi_characters> nsi_characters { get; set; }
@@ -25,10 +23,12 @@ namespace IntegrationDoc
         public virtual DbSet<nsi_pos_type> nsi_pos_type { get; set; }
         public virtual DbSet<nsi_reasons> nsi_reasons { get; set; }
         public virtual DbSet<nsi_regions> nsi_regions { get; set; }
-        public virtual DbSet<OrgTypeMap> OrgTypeMap { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<nsi_org>()
+                .Property(e => e.qg)
+                .IsFixedLength();
         }
     }
 }

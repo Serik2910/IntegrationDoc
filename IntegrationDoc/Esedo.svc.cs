@@ -14,12 +14,16 @@ using System.Web.Script.Serialization;
 using System.Net;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using IntegrationDoc.NsiUpdate;
+
 using System.Web;
 using System.Reflection;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Web.UI.WebControls.WebParts;
+using IntegrationDoc.NsiSync;
+
+using IntegrationDoc.NSI;
+using IntegrationDoc.Models;
 
 //using IntegrationDoc.ReceiverReference;
 
@@ -30,6 +34,7 @@ namespace IntegrationDoc
     [ServiceBehavior(Name = "QGServiceServ", ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class Esedo : IEsedo,IDict
     {
+        readonly object ThisLock = new object();
         public DocSender.DocumentResponse sendStateRegistered(EsedoStateMessage state)
         {
             DocSender.DocumentResponse response_to_baiterek;
@@ -56,11 +61,12 @@ namespace IntegrationDoc
                     regNo = state.o_reg_num,
                     secondSignNotifData = state.o_cms_base64
                 };
+                Const_esedo.QGClient qGClient = Const_esedo.qGClients.FirstOrDefault(p => p.ID == state.o_correspondent);
                 DocSender.DocumentRequest documentRequest = new DocSender.DocumentRequest()
                 {
                     requestDate = DateTime.Now,
-                    sender = "baiterek",
-                    receiver = new string[] { "esedo" },
+                    sender = Const_esedo.sender,
+                    receiver = new string[] { qGClient != null ? qGClient.receiver_code : Const_esedo.receiver_esedo },
                     data = stateRegistered
                 };
                 var serializer_ = new XmlSerializer(documentRequest.GetType(), new Type[] { typeof(DocSender.stateRegistered) });
@@ -150,11 +156,12 @@ namespace IntegrationDoc
                     isValidReason = state.o_com,
                     secondSignNotifData = state.o_cms_base64,
                 };
+                Const_esedo.QGClient qGClient = Const_esedo.qGClients.FirstOrDefault(p => p.ID == state.o_correspondent);
                 DocSender.DocumentRequest documentRequest = new DocSender.DocumentRequest()
                 {
                     requestDate = DateTime.Now,
-                    sender = "baiterek",
-                    receiver = new string[] { "esedo" },
+                    sender = Const_esedo.sender,
+                    receiver = new string[] { qGClient != null ? qGClient.receiver_code : Const_esedo.receiver_esedo },
                     data = stateNot_Valid
                 };
                 response_to_baiterek = documentPortClient.getDocument(documentRequest);
@@ -217,11 +224,12 @@ namespace IntegrationDoc
                     executive = state.o_performer,
                     executivePhone = state.o_phone
                 };
+                Const_esedo.QGClient qGClient = Const_esedo.qGClients.FirstOrDefault(p => p.ID == state.o_correspondent);
                 DocSender.DocumentRequest documentRequest = new DocSender.DocumentRequest()
                 {
                     requestDate = DateTime.Now,
-                    sender = "baiterek",
-                    receiver = new string[] { "esedo" },
+                    sender = Const_esedo.sender,
+                    receiver = new string[] { qGClient != null ? qGClient.receiver_code : Const_esedo.receiver_esedo },
                     data = stateExecution
                 };
                 response_to_baiterek = documentPortClient.getDocument(documentRequest);
@@ -314,11 +322,12 @@ namespace IntegrationDoc
                     idPortalInternalSpecified = state.o_id_portal_specified,
                     idPortalInternal = state.o_id_portal_specified ? long.Parse(state.o_id_portal) : 0
                 };
+                Const_esedo.QGClient qGClient = Const_esedo.qGClients.FirstOrDefault(p => p.ID == state.o_correspondent);
                 DocSender.DocumentRequest documentRequest = new DocSender.DocumentRequest()
                 {
                     requestDate = DateTime.Now,
-                    sender = "baiterek",
-                    receiver = new string[] { "esedo" },
+                    sender = Const_esedo.sender,
+                    receiver = new string[] { qGClient != null ? qGClient.receiver_code : Const_esedo.receiver_esedo },
                     data = stateFinished
                 };
                 response_to_baiterek = documentPortClient.getDocument(documentRequest);
@@ -487,7 +496,7 @@ namespace IntegrationDoc
                     docDateSpecified = true,
                     docKind = baiterekMessageOut.o_doc_type,
                     docKindSpecified = true,
-                    docLang = "KZRU",
+                    docLang = baiterekMessageOut.o_doc_lang==null?"KZRU": baiterekMessageOut.o_doc_lang,
                     docNo = baiterekMessageOut.o_reg,
                     docNoR = baiterekMessageOut.o_docNoR_specified ? baiterekMessageOut.o_doc_NoR : "",
                     docRecPostKz = baiterekMessageOut.o_doc_rec_post,
@@ -516,11 +525,12 @@ namespace IntegrationDoc
                     userUin = baiterekMessageOut.o_useruin_specified ? baiterekMessageOut.o_useruin : "",
                     executionDateSpecified = false
                 };
+                Const_esedo.QGClient qGClient = Const_esedo.qGClients.FirstOrDefault(p => p.ID == baiterekMessageOut.o_delivery_org_esedo);
                 DocSender.DocumentRequest documentRequest = new DocSender.DocumentRequest()
                 {
                     requestDate = DateTime.Now,
-                    sender = "baiterek",
-                    receiver = new string[] { "esedo" },
+                    sender = Const_esedo.sender,
+                    receiver = new string[] { qGClient != null ? qGClient.receiver_code : Const_esedo.receiver_esedo },
                     data = qGDocument
                 };
                 response_to_baiterek = documentPortClient.getDocument(documentRequest);
@@ -553,7 +563,7 @@ namespace IntegrationDoc
                         docDateSpecified = true,
                         docKind = baiterekMessageOut.o_doc_type,
                         docKindSpecified = true,
-                        docLang = "KZRU",
+                        docLang = baiterekMessageOut.o_doc_lang == null ? "KZRU" : baiterekMessageOut.o_doc_lang,
                         docNo = baiterekMessageOut.o_reg,
                         docNoR = baiterekMessageOut.o_docNoR_specified ? baiterekMessageOut.o_doc_NoR : "",
                         docRecPostKz = baiterekMessageOut.o_doc_rec_post,
@@ -655,7 +665,7 @@ namespace IntegrationDoc
                     docNoR = baiterekMessageOutNew.o_docNoR_specified ? baiterekMessageOutNew.o_doc_NoR : "",
                     docKind = baiterekMessageOutNew.o_doc_type,
                     docKindSpecified = true,
-                    docLang = "KZRU",
+                    docLang = baiterekMessageOutNew.o_doc_lang == null ? "KZRU" : baiterekMessageOutNew.o_doc_lang,
                     docNo = baiterekMessageOutNew.o_reg,
                     idPortalInternalSpecified = baiterekMessageOutNew.o_id_portal_specified,
                     idPortalInternal = baiterekMessageOutNew.o_id_portal_specified ? long.Parse(baiterekMessageOutNew.o_id_portal) : 0,
@@ -683,11 +693,12 @@ namespace IntegrationDoc
                     userUin = baiterekMessageOutNew.o_useruin_specified ? baiterekMessageOutNew.o_useruin : "",
                     executionDateSpecified = false
                 };
+                Const_esedo.QGClient qGClient = Const_esedo.qGClients.FirstOrDefault(p => p.ID == baiterekMessageOutNew.o_delivery_org_esedo);
                 DocSender.DocumentRequest documentRequest = new DocSender.DocumentRequest()
                 {
                     requestDate = DateTime.Now,
-                    sender = "baiterek",
-                    receiver = new string[] { "esedo" },
+                    sender = Const_esedo.sender,
+                    receiver = new string[] { qGClient != null ? qGClient.receiver_code : Const_esedo.receiver_esedo },
                     data = qGDocument
                 };
                 response_to_baiterek = documentPortClient.getDocument(documentRequest);
@@ -733,11 +744,9 @@ namespace IntegrationDoc
                         documentReceiverRu = baiterekMessageOutNew.o_document_receiver,
                         documentSectionId = "",
                         employeePhone = baiterekMessageOutNew.o_employee_phone,
-                        //executionDate = Convert.ToDateTime(orgMessageOut.o_execution_date),
                         executor = baiterekMessageOutNew.o_exec,
                         outTime = DateTime.Now,
                         outTimeSpecified = true,
-
                         preparedDate = Convert.ToDateTime(baiterekMessageOutNew.o_date_event),
                         preparedDateSpecified = true,
                         resolutionText = baiterekMessageOutNew.o_resolution_text,
@@ -774,198 +783,16 @@ namespace IntegrationDoc
                     }
                 };
             }
-            var serializer1 = new XmlSerializer(response_to_baiterek.GetType());
-            var sb = new StringBuilder();
-            using (TextWriter writer = new StringWriter(sb))
-            {
-                serializer1.Serialize(writer, response_to_baiterek);
-            }
-            string tmp = sb.ToString();
+            //var serializer1 = new XmlSerializer(response_to_baiterek.GetType());
+            //var sb = new StringBuilder();
+            //using (TextWriter writer = new StringWriter(sb))
+            //{
+            //    serializer1.Serialize(writer, response_to_baiterek);
+            //}
+            //string tmp = sb.ToString();
             return response_to_baiterek;
         }
-        public DocSender.DocumentResponse SendToESEDODocOL(BaiterekMessagePEPOutOld baiterekMessagePEPOutOld)
-        {
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-            UploadFileRequest[] uploads = new UploadFileRequest[baiterekMessagePEPOutOld.files.Length];
-            for (int i = 0; i < baiterekMessagePEPOutOld.files.Length; i++)
-            {
-                UploadFileRequest upload = new UploadFileRequest
-                {
-                    content = System.Convert.FromBase64String(baiterekMessagePEPOutOld.files[i].data),
-                    fileProcessIdentifier = baiterekMessagePEPOutOld.o_uuid,
-                    lifeTime = 7 * 86400000,
-                    lifeTimeSpecified = true,
-                    name = baiterekMessagePEPOutOld.files[i].name,
-                    needToBeConfirmedSpecified = false,
-                    mime = "application/octet-stream"
-                };
-                uploads[i] = upload;
-            }
-            GetMessageResponse hedResponce;
-            DocSender.DocumentResponse response_to_org;
-            try
-            {
-                const int high = 7500000; //верхний порог размера файлов, а также максимальный размер пула
-                const int total_high = 99600000;
-                const int file_quantity_max = 80;
-                if (uploads.Length > file_quantity_max)
-                    throw new Exception($"Превышен максимальный лимит {file_quantity_max} кол-ва файлов с кол-вом {uploads.Length} файлов");
-                List<(int a, int b)> tuppleList = new List<(int, int)>(); // список кортежей из пары значений (размер файла, индекс в upload)
-                List<List<int>> group = new List<List<int>>(); // список списков разбиения  файлов по суммарному размеру <=high
-                int total_volume = 0;
-                for (int i = 0; i < uploads.Length; i++) // Забивка списка кортежей(размер, индекс) и проверка файлов по ограничителю 
-                {
-                    if (uploads[i].content.Length > high)
-                        throw new Exception($"Превышен максимальный лимит {high} byte для файла {uploads[i].name} с размером {uploads[i].content.Length} byte");
-                    total_volume += uploads[i].content.Length;
-                    if (total_volume > total_high)
-                        throw new Exception($"Превышен максимальный лимит для суммарного объема файлов {total_high} byte, т.к. на {i}-м файле объем стал {total_volume} byte");
-                    tuppleList.Add((uploads[i].content.Length, i));
-                }
-                tuppleList.Sort();
-                tuppleList.Reverse();
-                while (tuppleList.Count > 0)
-                {
-                    int volume = (int)high, i = 0;
-                    List<int> tempList = new List<int>();
-                    tempList.Add(tuppleList[0].b);
-                    volume -= tuppleList[0].a;
-                    tuppleList.RemoveAt(0);
-                    while ((tuppleList.Where(p => p.a <= volume).Count() != 0) && (i < tuppleList.Count))
-                    {
-                        if (tuppleList[i].a <= volume)
-                        {
-                            tempList.Add(tuppleList[i].b);
-                            volume -= tuppleList[i].a;
-                            tuppleList.RemoveAt(i);
-                        }
-                        else { i++; }
-                    }
-                    group.Add(tempList);
-                }
-                DocSender.attachment[] attachments_ = new DocSender.attachment[uploads.Length];
-                int z = 0;
-                foreach (var q in group)
-                {
-                    UploadFileRequest[] Sub_uploads = new UploadFileRequest[q.Count];
-                    for (int i = 0; i < q.Count; i++)
-                        Sub_uploads[i] = uploads[q[i]];
-                    hedResponce = sendToHedFiles(Sub_uploads);
-                    //JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    //dynamic a = hedResponce.response.responseData.data;
-                    //string json2 = serializer.Serialize(hedResponce);
-                    string json = JsonConvert.SerializeObject(hedResponce);
-                    GetMessageResponse hedResponce1 = JsonConvert.DeserializeObject<GetMessageResponse>(json);
-                    FileUploadResult[] fileUploadResults = hedResponce.response.responseData.data_.tempStorageResponse.uploadResponse.uploadFileResults;
-
-                    for (int i = 0; (i < fileUploadResults.Length) && (z < uploads.Length); i++, z++)
-                    {
-                        attachments_[z] = new DocSender.attachment() { fileIdentifier = fileUploadResults[i].fileIdentifier };
-                    }
-                }
-                DocSender.DocumentPortClient documentPortClient = new DocSender.DocumentPortClient();
-
-                DocSender.docOL docOL = new DocSender.docOL()
-                {
-                    attachments = attachments_,
-                    metadataSystem = new DocSender.metadataSystem()
-                    {
-                        activityId = baiterekMessagePEPOutOld.o_uuid,
-                        senderOrg = Const_esedo.baiterek_guid,
-                        fromSpecified = true,
-                        from = Const_esedo.baiterek_id,
-                        href = baiterekMessagePEPOutOld.o_uuid,
-                        performers = new long?[] { baiterekMessagePEPOutOld.o_delivery_org_esedo }, // , 1629005
-                        senderOrgSpecified = true
-                    },
-                    appendCount = baiterekMessagePEPOutOld.o_in_amount,
-                    address = baiterekMessagePEPOutOld.o_address,
-                    citizenship = baiterekMessagePEPOutOld.o_country == Const_esedo.rezidentPEP ? "KZ" : "Other",
-                    carrierType = "1",
-                    character = baiterekMessagePEPOutOld.o_character,
-                    characterSpecified = true,
-                    controlTypeOuterCode = "",
-                    controlTypeOuterNameKz = "",
-                    controlTypeOuterNameRu = "",
-                    deliveryDate = Convert.ToDateTime(baiterekMessagePEPOutOld.o_delivery_date),
-                    deliveryDateSpecified = true,
-                    description = baiterekMessagePEPOutOld.o_description,
-                    docDateR = Convert.ToDateTime(baiterekMessagePEPOutOld.o_doc_dateR),
-                    docDateRSpecified = true,
-                    docNoR = baiterekMessagePEPOutOld.o_doc_NoR,
-                    docKind = baiterekMessagePEPOutOld.o_doc_kind,
-                    docKindSpecified = true,
-                    docLang = baiterekMessagePEPOutOld.o_doc_lang == Const_esedo.engLang ? "ENG" :
-                       baiterekMessagePEPOutOld.o_doc_lang == Const_esedo.kazLang ? "KZ" :
-                       baiterekMessagePEPOutOld.o_doc_lang == Const_esedo.rusLang ? "RU" :
-                       baiterekMessagePEPOutOld.o_doc_lang == Const_esedo.kazRusLang ? "KZRU" : "RUOther",
-                    docReqAuthor = baiterekMessagePEPOutOld.o_author_name,
-                    documentType = baiterekMessagePEPOutOld.o_doc_type,
-                    documentTypeSpecified = true,
-                    email = baiterekMessagePEPOutOld.o_email,
-                    executionDate = baiterekMessagePEPOutOld.o_date_end == string.Empty ? Convert.ToDateTime(baiterekMessagePEPOutOld.o_date_end) : DateTime.Now.AddDays(30),
-                    juridicallyName = baiterekMessagePEPOutOld.o_legal,
-                    idPortalInternalSpecified = true,
-                    idPortalInternal = long.Parse(baiterekMessagePEPOutOld.o_id_portal),
-                    middlename = baiterekMessagePEPOutOld.o_middlename,
-                    name = baiterekMessagePEPOutOld.o_firstname,
-                    surname = baiterekMessagePEPOutOld.o_surname,
-                    note = baiterekMessagePEPOutOld.o_description,
-                    phone = baiterekMessagePEPOutOld.o_contact_phone,
-                    portalSign = baiterekMessagePEPOutOld.o_portal_sign,
-                    secondSignData = baiterekMessagePEPOutOld.o_canc_sign,
-                    secondSignEnabled = "1",
-                    preparedDate = Convert.ToDateTime(baiterekMessagePEPOutOld.o_prepared_date),
-                    preparedDateSpecified = true,
-                    regDateOL = baiterekMessagePEPOutOld.o_date_out != string.Empty ? Convert.ToDateTime(baiterekMessagePEPOutOld.o_date_out) : DateTime.Now,
-                    regDateOLSpecified = baiterekMessagePEPOutOld.o_date_out != string.Empty ? true : false,
-                    regNumberOL = baiterekMessagePEPOutOld.o_doc_number,
-                    region = "",
-                    sheetCount = "0",
-                    signerNameKz = baiterekMessagePEPOutOld.o_signatory,
-                    signerNameRu = baiterekMessagePEPOutOld.o_signatory,
-                    userUin = baiterekMessagePEPOutOld.o_useruin,
-
-                    executionDateSpecified = false
-                };
-                DocSender.DocumentRequest documentRequest = new DocSender.DocumentRequest()
-                {
-                    requestDate = DateTime.Now,
-                    sender = "baiterek",
-                    receiver = new string[] { "esedo" },
-                    data = docOL
-                };
-                response_to_org = documentPortClient.getDocument(documentRequest);
-            }
-            catch (Exception ex)
-            {
-                response_to_org = new DocSender.DocumentResponse();
-                response_to_org.responseDate = DateTime.Now;
-                response_to_org.data_ = new DocSender.qujatGatewayDelivered()
-                {
-                    date = DateTime.Now,
-                    status = 0,
-                    error = ex.Message,
-                    metadataSystem = new DocSender.metadataSystem()
-                    {
-                        activityId = baiterekMessagePEPOutOld.o_uuid,
-                        from = Const_esedo.qujatgateway_id,
-                        fromSpecified = true,
-                        href = baiterekMessagePEPOutOld.o_uuid,
-                        performers = new long?[] { Const_esedo.baiterek_id },
-                        senderOrg = Const_esedo.qujatgateway_guid
-                    }
-                };
-            }
-            var serializer1 = new XmlSerializer(response_to_org.GetType());
-            var sb = new StringBuilder();
-            using (TextWriter writer = new StringWriter(sb))
-            {
-                serializer1.Serialize(writer, response_to_org);
-            }
-            string tmp = sb.ToString();
-            return response_to_org;
-        }
+       
         public DocSender.DocumentResponse SendToESEDODocOLNew(BaiterekMessagePEPOut baiterekMessagePEPOut)
         {
             System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
@@ -993,7 +820,7 @@ namespace IntegrationDoc
                     },
                     appendCount = baiterekMessagePEPOut.o_in_amount,
                     address = baiterekMessagePEPOut.o_address,
-                    citizenship = baiterekMessagePEPOut.o_country == Const_esedo.rezidentPEP ? "KZ" : "Other",
+                    citizenship = baiterekMessagePEPOut.o_rezidency,
                     carrierType = "1",
                     character = baiterekMessagePEPOut.o_character,
                     characterSpecified = true,
@@ -1008,10 +835,7 @@ namespace IntegrationDoc
                     docNoR = baiterekMessagePEPOut.o_doc_NoR,
                     docKind = baiterekMessagePEPOut.o_doc_kind,
                     docKindSpecified = true,
-                    docLang = baiterekMessagePEPOut.o_doc_lang == Const_esedo.engLang ? "ENG" :
-                        baiterekMessagePEPOut.o_doc_lang == Const_esedo.kazLang ? "KZ" :
-                        baiterekMessagePEPOut.o_doc_lang == Const_esedo.rusLang ? "RU" :
-                        baiterekMessagePEPOut.o_doc_lang == Const_esedo.kazRusLang ? "KZRU" : "RUOther",
+                    docLang = baiterekMessagePEPOut.o_doc_lang,
                     docReqAuthor = baiterekMessagePEPOut.o_author_name,
                     documentType = baiterekMessagePEPOut.o_doc_type,
                     documentTypeSpecified = true,
@@ -1040,11 +864,12 @@ namespace IntegrationDoc
                     userUin = baiterekMessagePEPOut.o_useruin,
                     executionDateSpecified = false
                 };
+                Const_esedo.QGClient qGClient = Const_esedo.qGClients.FirstOrDefault(p => p.ID == baiterekMessagePEPOut.o_delivery_org_esedo);
                 DocSender.DocumentRequest documentRequest = new DocSender.DocumentRequest()
                 {
                     requestDate = DateTime.Now,
-                    sender = "baiterek",
-                    receiver = new string[] { "esedo" },
+                    sender = Const_esedo.sender,
+                    receiver = new string[] { qGClient != null ? qGClient.receiver_code : Const_esedo.receiver_esedo },
                     data = docOL
                 };
                 response_to_org = documentPortClient.getDocument(documentRequest);
@@ -1378,7 +1203,7 @@ namespace IntegrationDoc
                 tempList.Add(tuppleList[0].b);
                 volume -= tuppleList[0].a;
                 tuppleList.RemoveAt(0);
-                int i = 1;
+                int i = 0;
                 while ((tuppleList.Where(p => p.a <= volume).Count() != 0) && (i < tuppleList.Count))
                 {
                     if (tuppleList[i].a <= volume)
@@ -1461,7 +1286,7 @@ namespace IntegrationDoc
                                     writer.WriteLine("\t"+tmpFileCache[w]);
                                 }
                             }
-                            throw new Exception("error on read from hed ");
+                            throw new Exception(DateTime.Now+": error on read from hed ");
                         }
                     }
                 } while (error);
@@ -1473,6 +1298,7 @@ namespace IntegrationDoc
             string activity = "";
             int status_ = 1;
             string error_text = "";
+            Const_esedo.QGClient qGClient = Const_esedo.qGClients.FirstOrDefault(p => p.ID == request.data.metadataSystem.from);
             Sbapi sbapi = new Sbapi();
             try
             {
@@ -1484,8 +1310,8 @@ namespace IntegrationDoc
                         DocSender.DocumentRequest documentRequest = new DocSender.DocumentRequest()
                         {
                             requestDate = DateTime.Now,
-                            sender = "baiterek",
-                            receiver = new string[] { "esedo" },
+                            sender = Const_esedo.sender,
+                            receiver = new string[] { qGClient != null ? qGClient.receiver_code : Const_esedo.receiver_esedo },
                             data = new DocSender.stateDelivered()
                             {
                                 dateSpecified = true,
@@ -1517,8 +1343,8 @@ namespace IntegrationDoc
                         DocSender.DocumentRequest documentRequest1 = new DocSender.DocumentRequest()
                         {
                             requestDate = DateTime.Now,
-                            sender = "baiterek",
-                            receiver = new string[] { "esedo" },
+                            sender = Const_esedo.sender,
+                            receiver = new string[] { qGClient != null ? qGClient.receiver_code : Const_esedo.receiver_esedo },
                             data = new DocSender.stateDelivered()
                             {
                                 dateSpecified = true,
@@ -1553,8 +1379,8 @@ namespace IntegrationDoc
                         DocSender.DocumentRequest documentRequest2 = new DocSender.DocumentRequest()
                         {
                             requestDate = DateTime.Now,
-                            sender = "baiterek",
-                            receiver = new string[] { "esedo" },
+                            sender = Const_esedo.sender,
+                            receiver = new string[] { qGClient != null ? qGClient.receiver_code : Const_esedo.receiver_esedo },
                             data = new DocSender.stateDelivered()
                             {
                                 dateSpecified = true,
@@ -1579,8 +1405,8 @@ namespace IntegrationDoc
                             DocSender.DocumentRequest documentRequest2_PEP = new DocSender.DocumentRequest()
                             {
                                 requestDate = DateTime.Now,
-                                sender = "baiterek",
-                                receiver = new string[] { "esedo" },
+                                sender = Const_esedo.sender,
+                                receiver = new string[] { qGClient != null ? qGClient.receiver_code : Const_esedo.receiver_esedo },
                                 data = new DocSender.stateDelivered()
                                 {
                                     dateSpecified = true,
@@ -1652,7 +1478,7 @@ namespace IntegrationDoc
             catch (Exception ex)
             {
                 status_ = 0;
-                error_text = ex.Message;
+                error_text = ex.Message + ":" + ex.StackTrace;
             }
             //QGDocument qG = (DocReceiver.QGDocument)(request.data);
             // Проверка на наличие среди перформеров Байтерека
@@ -1675,7 +1501,7 @@ namespace IntegrationDoc
                     senderOrg = Const_esedo.baiterek_guid,
                     fromSpecified = true,
                     from = Const_esedo.baiterek_id,
-                    href = (status_ == 1) ? string.Format($"{sbapi.body.object_.text}") : "",
+                    href = (status_ == 1) ? sbapi.body.object_.text : "",
                     performers = new ArrayOfNullableOfInt64 { request.data.metadataSystem.from }
                 }
             };
@@ -1698,7 +1524,7 @@ namespace IntegrationDoc
                     o_date_event = dS.docDate.AddHours(6).ToString("yyyy-MM-ddTHH:mm:ssZ"),
                     o_description = dS.description,
                     o_doc_kind = dS.docKind,
-                    o_language = 428,
+                    o_language = "KZRU",
                     o_character = dS.character,
                     o_outgoing_number = dS.docNumber.Trim(new char[] { '-' }),
                     o_phone = dS.employeePhone.Trim(new char[] { '-' }),
@@ -1727,7 +1553,7 @@ namespace IntegrationDoc
                     if (sbapi.header.error.id != "0")
                     {
                         error = true;
-                        error_message = string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\"");
+                        error_message = "error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text;
                     }
                     else if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                     {
@@ -1739,7 +1565,7 @@ namespace IntegrationDoc
                 }
                 catch (Exception ex)
                 {
-                    error_message = string.Format($"error on call to REST(POST) of Simbase:{ex.Message}");
+                    error_message ="error on call to REST(POST) of Simbase: " + ex.Message;
                     throw new Exception(error_message);
                 }
 
@@ -1775,10 +1601,10 @@ namespace IntegrationDoc
                 {
                     o_correspondent = (int)qG.metadataSystem.from,
                     o_date_end = qG.executionDate == new DateTime(0001, 01, 01, 00, 00, 00) ? "" : qG.executionDate.ToString("s"),
-                    o_date_event = qG.docDate.AddHours(6).ToString("s"),
+                    o_doc_date = qG.docDate.AddHours(6).ToString("s"),
                     o_description = qG.description,
                     o_doc_kind = qG.docKind,
-                    o_language = (qG.docLang.ToUpper() == "KZ") ? 426 : 428,
+                    o_language = qG.docLang,
                     o_outgoing_number = qG.docNo.TrimStart(new char[] { '-' }).Trim(new char[] { '\n' }),
                     o_phone = qG.employeePhone.TrimStart(new char[] { '-' }).Trim(new char[] { '\n' }),
                     o_signatory = (qG.signerNameKz != "") ? qG.signerNameKz : qG.signerNameRu,
@@ -1788,11 +1614,18 @@ namespace IntegrationDoc
                     o_control_type_outer_name = qG.controlTypeOuterNameRu,
                     o_author_name = (qG.authorNameRu == "") ? qG.authorNameKz : qG.authorNameRu,
                     o_doc_to_number = qG.docToNumber,
-                    o_out_time = qG.outTime == new DateTime(0001,01,01,00,00,00)? "": qG.outTime.ToString("s"),
-                    o_prepared_date = qG.preparedDate == new DateTime(0001, 01, 01, 00, 00, 00) ? "":qG.preparedDate.ToString("s"),
+                    o_out_time = qG.outTime == new DateTime(0001, 01, 01, 00, 00, 00) ? "" : qG.outTime.ToString("s"),
+                    o_prepared_date = qG.preparedDate == new DateTime(0001, 01, 01, 00, 00, 00) ? "" : qG.preparedDate.ToString("s"),
                     o_character = qG.character,
                     files = fileIDs,
-                    o_canc_sign = qG.secondSignData
+                    o_canc_sign = qG.secondSignData,
+                    o_doc_rec_post = (qG.docRecPostKz == "") ? qG.docRecPostRu?.Trim() : qG.docRecPostKz?.Trim(),
+                    o_document_receiver = (qG.documentReceiverKz == "") ? qG.documentReceiverRu : qG.documentReceiverKz,
+                    o_resolution = qG.resolutionText,
+                    o_doc_page_num = qG.sheetCount,
+                    o_in_amount = qG.appendCount,
+                    
+                    
                 };
                 string response;
                 try
@@ -1807,7 +1640,7 @@ namespace IntegrationDoc
                     if (sbapi.header.error.id != "0")
                     {
                         error = true;
-                        error_message = string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\"");
+                        error_message = "error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text;
                     }
                     else if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                     {
@@ -1819,7 +1652,7 @@ namespace IntegrationDoc
                 }
                 catch (Exception ex)
                 {
-                    error_message = string.Format($"error on call to REST(POST) of Simbase:{ex.Message}");
+                    error_message = "error on call to REST(POST) of Simbase: "+ ex.Message;
                     throw new Exception(error_message);
                 }
 
@@ -1909,7 +1742,7 @@ namespace IntegrationDoc
                                 if (sbapi.header.error.id != "0")
                                 {
                                     error = true;
-                                    error_message = string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\"");
+                                    error_message = "error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text;
                                     throw new Exception(error_message);
                                 }
                                 else
@@ -1989,10 +1822,10 @@ namespace IntegrationDoc
                     o_correspondent = doc.metadataSystem.senderOrg.ToString(),
                     o_address = doc.address,
                     o_contact_phone = doc.phone.TrimStart(new char[] { '-' }).Trim(new char[] { '\n' }),
-                    o_country = Const_esedo.rezidentPEP,
+                    o_rezidency = "KZ",
                     o_date_out = doc.outDate.ToString("s"),
                     o_author_name = doc.surname + " " + doc.name + " " + doc.middlename,
-                    o_doc_lang = Const_esedo.kazRusLang,
+                    o_doc_lang = "KZRU",
                     o_doc_type = (int)doc.documentType,
                     o_email = doc.email,
                     o_surname = doc.surname,
@@ -2000,7 +1833,7 @@ namespace IntegrationDoc
                     o_middlename = doc.middlename,
                     o_useruin = doc.userUin,
                     o_in_amount = doc.attachments == null? "0": (doc.attachments.Length - 1).ToString(),
-                    o_legal = (doc.juridicallyName == "") ? "-" : doc.juridicallyName,
+                    o_legal = (doc.juridicallyName == "") ? "\\" : doc.juridicallyName,
                     o_locality = Const_esedo.localityPEP,
                     o_id_portal = doc.idPortalInternal.ToString(),
                     o_delivery_date = doc.deliveryDate.ToString("s"),
@@ -2043,7 +1876,7 @@ namespace IntegrationDoc
                     if (sbapi.header.error.id != "0")
                     {
                         error = true;
-                        error_message = string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\"");
+                        error_message = "error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text;
                     }
                     if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                     {
@@ -2055,7 +1888,7 @@ namespace IntegrationDoc
                 }
                 catch (Exception ex)
                 {
-                    error_message = string.Format($"error on call to REST(POST) of Simbase:{ex.Message}");
+                    error_message = "error on call to REST(POST) of Simbase: " + ex.Message;
                     throw new Exception(error_message);
                 }
                 activity = doc.metadataSystem.href;
@@ -2093,21 +1926,19 @@ namespace IntegrationDoc
                 BaiterekMessagePEP orgMessagePEP = new BaiterekMessagePEP()
                 {
                     o_correspondent = doc.metadataSystem.senderOrg.ToString(),
+                    o_from = doc.metadataSystem.from.ToString(),
                     o_address = doc.address.TrimStart(new char[] { '-' }).Trim(new char[] { '\n' }),
                     o_contact_phone = doc.phone.TrimStart(new char[] { '-' }).Trim(new char[] { '\n' }),
                     o_character = doc.character,
-                    o_country = doc.citizenship == "KZ" ? Const_esedo.rezidentPEP : Const_esedo.nonRezidentPEP,
+                    o_rezidency = String.IsNullOrEmpty(doc.citizenship)? "Other":doc.citizenship,
                     o_date_out = doc.regDateOL.ToString("s"),
                     o_doc_kind = doc.docKind,
                     o_control_type_outer_code = doc.controlTypeOuterCode,
                     o_control_type_outer_name = doc.controlTypeOuterNameRu,
                     o_delivery_date = doc.deliveryDate.ToString("s"),
                     o_date_end = doc.executionDate.ToString("s"),
-                    o_doc_lang = doc.docLang == "RU" ? Const_esedo.rusLang :
-                        doc.docLang == "KZ" ? Const_esedo.kazLang :
-                        doc.docLang == "KZRU" ? Const_esedo.kazRusLang :
-                        doc.docLang == "ENG" ? Const_esedo.engLang : Const_esedo.otherLang,
-                    o_doc_type = (int)doc.documentType,
+                    o_doc_lang = doc.docLang,
+                    o_doc_type = doc.documentType,
                     o_email = doc.email,
                     o_surname = doc.surname,
                     o_firstname = doc.name,
@@ -2162,9 +1993,9 @@ namespace IntegrationDoc
                     if (sbapi.header.error.id != "0")
                     {
                         error = true;
-                        error_message = string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\"");
+                        error_message = "error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text;
                     }
-                    if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
+                    else if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                     {
                         error = true;
                         error_message = sbapi.body.object_.text;
@@ -2174,7 +2005,7 @@ namespace IntegrationDoc
                 }
                 catch (Exception ex)
                 {
-                    error_message = string.Format($"error on call to REST(POST) of Simbase:{ex.Message}");
+                    error_message = "error on call to REST(POST) of Simbase: " + ex.Message;
                     throw new Exception(error_message);
                 }
                 activity = doc.metadataSystem.href;
@@ -2215,7 +2046,7 @@ namespace IntegrationDoc
                 //sbapi2 = response.XmlDeserializeFromString<Sbapi>();
                 if (sbapi.header.error.id != "0")
                 {
-                    throw new Exception(string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\""));
+                    throw new Exception("error id = " +sbapi.header.error.id+ " text = "+sbapi.header.error.text);
                 }
                 if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                 {
@@ -2224,7 +2055,7 @@ namespace IntegrationDoc
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format($"error on call to REST(POST) of Simbase:{ex.Message}"));
+                throw new Exception("error on call to REST(POST) of Simbase: "+ex.Message);
             }
             activity = sbapi.body.object_.text;
         }
@@ -2258,7 +2089,7 @@ namespace IntegrationDoc
                 //sbapi2 = response.XmlDeserializeFromString<Sbapi>();
                 if (sbapi.header.error.id != "0")
                 {
-                    throw new Exception(string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\""));
+                    throw new Exception("error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text);
                 }
                 if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                 {
@@ -2267,7 +2098,7 @@ namespace IntegrationDoc
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format($"error on call to REST(POST) of Simbase:{ex.Message}"));
+                throw new Exception("error on call to REST(POST) of Simbase: " + ex.Message);
             }
             activity = sbapi.body.object_.text;
         }
@@ -2300,7 +2131,7 @@ namespace IntegrationDoc
                 //sbapi2 = response.XmlDeserializeFromString<Sbapi>();
                 if (sbapi.header.error.id != "0")
                 {
-                    throw new Exception(string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\""));
+                    throw new Exception("error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text);
                 }
                 if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                 {
@@ -2309,7 +2140,7 @@ namespace IntegrationDoc
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format($"error on call to REST(POST) of Simbase:{ex.Message}"));
+                throw new Exception("error on call to REST(POST) of Simbase: " + ex.Message);
             }
             activity = sbapi.body.object_.text;
         }
@@ -2344,7 +2175,7 @@ namespace IntegrationDoc
                 //sbapi2 = response.XmlDeserializeFromString<Sbapi>();
                 if (sbapi.header.error.id != "0")
                 {
-                    throw new Exception(string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\""));
+                    throw new Exception("error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text);
                 }
                 if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                 {
@@ -2353,7 +2184,7 @@ namespace IntegrationDoc
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format($"error on call to REST(POST) of Simbase:{ex.Message}"));
+                throw new Exception("error on call to REST(POST) of Simbase: " + ex.Message);
             }
             activity = sbapi.body.object_.text;
         }
@@ -2388,7 +2219,7 @@ namespace IntegrationDoc
                 //sbapi2 = response.XmlDeserializeFromString<Sbapi>();
                 if (sbapi.header.error.id != "0")
                 {
-                    throw new Exception(string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\""));
+                    throw new Exception("error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text);
                 }
                 if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                 {
@@ -2397,7 +2228,7 @@ namespace IntegrationDoc
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format($"error on call to REST(POST) of Simbase:{ex.Message}"));
+                throw new Exception("error on call to REST(POST) of Simbase: " + ex.Message);
             }
             activity = sbapi.body.object_.text;
         }
@@ -2431,7 +2262,7 @@ namespace IntegrationDoc
                 //sbapi2 = response.XmlDeserializeFromString<Sbapi>();
                 if (sbapi.header.error.id != "0")
                 {
-                    throw new Exception(string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\""));
+                    throw new Exception("error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text);
                 }
                 if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                 {
@@ -2440,7 +2271,7 @@ namespace IntegrationDoc
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format($"error on call to REST(POST) of Simbase:{ex.Message}"));
+                throw new Exception("error on call to REST(POST) of Simbase: " + ex.Message);
             }
             activity = sbapi.body.object_.text;
         }
@@ -2474,7 +2305,7 @@ namespace IntegrationDoc
                 //sbapi2 = response.XmlDeserializeFromString<Sbapi>();
                 if (sbapi.header.error.id != "0")
                 {
-                    throw new Exception(string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\""));
+                    throw new Exception("error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text);
                 }
                 if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                 {
@@ -2483,7 +2314,7 @@ namespace IntegrationDoc
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format($"error on call to REST(POST) of Simbase:{ex.Message}"));
+                throw new Exception("error on call to REST(POST) of Simbase: " + ex.Message);
             }
             activity = sbapi.body.object_.text;
         }
@@ -2493,14 +2324,14 @@ namespace IntegrationDoc
             foreach (var t in state_new_ex_date.metadataSystem.performers)
                 if (t == Const_esedo.baiterek_id) { error = false; }
             if (error) { throw new Exception("Baiterek not pointed as receiver!"); }
-            DateTime gmt_corr = state_new_ex_date.execDate.AddHours(6);
+            DateTime gmt_corr = state_new_ex_date.execDate==DateTime.MinValue?DateTime.MinValue:state_new_ex_date.execDate.AddHours(6);
             BaiterekMessageState baiterekMessageDeliveryState = new BaiterekMessageState()
             {
                 o_uuid = state_new_ex_date.metadataSystem.href,
                 o_from = state_new_ex_date.metadataSystem.from.ToString(),
                 o_control_type = state_new_ex_date.controlTypeCode,
                 o_control_type_name = state_new_ex_date.controlTypeNameRu,
-                o_date_exec = gmt_corr.ToString("s"),
+                o_date_exec = state_new_ex_date.execDate == DateTime.MinValue?"":gmt_corr.ToString("s"),
                 o_date_refresh = DateTime.Now.ToString("s"),
                 o_transaction_history = "stateNewExDate(" + state_new_ex_date.metadataSystem.from.ToString() + ", " + state_new_ex_date.controlTypeCode + "," + state_new_ex_date.controlTypeNameRu + "," +
                 gmt_corr.ToString("s") + ") " + DateTime.Now.ToString("s")
@@ -2517,7 +2348,7 @@ namespace IntegrationDoc
                 //sbapi2 = response.XmlDeserializeFromString<Sbapi>();
                 if (sbapi.header.error.id != "0")
                 {
-                    throw new Exception(string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\""));
+                    throw new Exception("error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text);
                 }
                 if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                 {
@@ -2526,7 +2357,7 @@ namespace IntegrationDoc
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format($"error on call to REST(POST) of Simbase:{ex.Message}"));
+                throw new Exception("error on call to REST(POST) of Simbase: " + ex.Message);
             }
             activity = sbapi.body.object_.text;
         }
@@ -2558,7 +2389,7 @@ namespace IntegrationDoc
                 //sbapi2 = response.XmlDeserializeFromString<Sbapi>();
                 if (sbapi.header.error.id != "0")
                 {
-                    throw new Exception(string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\""));
+                    throw new Exception("error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text);
                 }
                 if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                 {
@@ -2567,7 +2398,7 @@ namespace IntegrationDoc
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format($"error on call to REST(POST) of Simbase:{ex.Message}"));
+                throw new Exception("error on call to REST(POST) of Simbase: " + ex.Message);
             }
             activity = sbapi.body.object_.text;
         }
@@ -2599,16 +2430,16 @@ namespace IntegrationDoc
                 //sbapi2 = response.XmlDeserializeFromString<Sbapi>();
                 if (sbapi.header.error.id != "0")
                 {
-                    throw new Exception(string.Format($"error id = \"{sbapi.header.error.id}\" text = \"{sbapi.header.error.text}\""));
+                    throw new Exception("error id = " + sbapi.header.error.id + " text = " + sbapi.header.error.text);
                 }
-                else if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
+                if (sbapi.body.object_.text.Substring(0, sbapi.body.object_.text.Length >= 5 ? 5 : sbapi.body.object_.text.Length).ToLower() == "error")
                 {
                     throw new Exception(sbapi.body.object_.text);
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format($"error on call to REST(POST) of Simbase:{ex.Message}"));
+                throw new Exception("error on call to REST(POST) of Simbase: " + ex.Message);
             }
             activity = sbapi.body.object_.text;
         }
@@ -2623,7 +2454,6 @@ namespace IntegrationDoc
                 );
             string auth = authElement.ToString();
 
-            //string auth = "<authdata msg_id=\"1\" user=\"api.sign\" password=\"5faa45564a06be9cfd191310c0987bf9aeadf337\" msg_type=\"9000\" user_ip=\"127.0.0.1\" />";
             string authBase64 = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(auth));
             XDocument xdoc = new XDocument(
                 new XElement("sbapi",
@@ -2670,21 +2500,24 @@ namespace IntegrationDoc
                         )
                     )
                 );
-            string a = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n" + xdoc.ToString();
-            byte[] requestInFormOfBytes = System.Text.Encoding.UTF8.GetBytes(a);
+
+            string apiXMLString = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n" + xdoc.ToString();
+            byte[] requestInFormOfBytes = System.Text.Encoding.UTF8.GetBytes(apiXMLString);
             string strResponseValue = string.Empty;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Const_esedo.orgURL);
             request.Method = "POST";
-            request.Timeout = 500000;
+            request.Timeout = 50000;
             HttpWebResponse response = null;
-            if (request.Method == "POST")
+
+            request.ContentType = "text/xml;charset=utf-8";
+            lock (this.ThisLock)
             {
-                request.ContentType = "text/xml;charset=utf-8";
                 using (Stream streamWriter = request.GetRequestStream())
                 {
                     streamWriter.Write(requestInFormOfBytes, 0, requestInFormOfBytes.Length);
                 }
             }
+
             try
             {
                 response = (HttpWebResponse)request.GetResponse();
@@ -2724,7 +2557,7 @@ namespace IntegrationDoc
                 );
             string auth = authElement.ToString();
 
-            //string auth = "<authdata msg_id=\"1\" user=\"api.sign\" password=\"5faa45564a06be9cfd191310c0987bf9aeadf337\" msg_type=\"9000\" user_ip=\"127.0.0.1\" />";
+
             string authBase64 = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(auth));
             XDocument xdoc = new XDocument(
                 new XElement("sbapi",
@@ -2825,7 +2658,6 @@ namespace IntegrationDoc
                 );
             string auth = authElement.ToString();
 
-            //string auth = "<authdata msg_id=\"1\" user=\"api.sign\" password=\"5faa45564a06be9cfd191310c0987bf9aeadf337\" msg_type=\"9000\" user_ip=\"127.0.0.1\" />";
             string authBase64 = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(auth));
             XDocument xdoc = new XDocument(
                 new XElement("sbapi",
@@ -2866,16 +2698,17 @@ namespace IntegrationDoc
                         )
                     )
                 );
-            string a = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n" + xdoc.ToString();
-            byte[] requestInFormOfBytes = System.Text.Encoding.UTF8.GetBytes(a);
+            string apiXMLString = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n" + xdoc.ToString();
+            byte[] requestInFormOfBytes = System.Text.Encoding.UTF8.GetBytes(apiXMLString);
             string strResponseValue = string.Empty;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Const_esedo.orgURL);
             request.Method = "POST";
-            request.Timeout = 500000;
+            request.Timeout = 50000;
             HttpWebResponse response = null;
-            if (request.Method == "POST")
+
+            request.ContentType = "text/xml;charset=utf-8";
+            lock (this.ThisLock)
             {
-                request.ContentType = "text/xml;charset=utf-8";
                 using (Stream streamWriter = request.GetRequestStream())
                 {
                     streamWriter.Write(requestInFormOfBytes, 0, requestInFormOfBytes.Length);
@@ -2920,7 +2753,6 @@ namespace IntegrationDoc
                 );
             string auth = authElement.ToString();
 
-            //string auth = "<authdata msg_id=\"1\" user=\"api.sign\" password=\"5faa45564a06be9cfd191310c0987bf9aeadf337\" msg_type=\"9000\" user_ip=\"127.0.0.1\" />";
             string authBase64 = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(auth));
             XDocument xdoc = new XDocument(
                 new XElement("sbapi",
@@ -2958,16 +2790,17 @@ namespace IntegrationDoc
                         )
                     )
                 );
-            string a = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n" + xdoc.ToString();
-            byte[] requestInFormOfBytes = System.Text.Encoding.UTF8.GetBytes(a);
+            string apiXMLString = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n" + xdoc.ToString();
+            byte[] requestInFormOfBytes = System.Text.Encoding.UTF8.GetBytes(apiXMLString);
             string strResponseValue = string.Empty;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Const_esedo.orgURL);
             request.Method = "POST";
-            request.Timeout = 500000;
+            request.Timeout = 50000;
             HttpWebResponse response = null;
-            if (request.Method == "POST")
+            request.ContentType = "text/xml;charset=utf-8";
+            lock (this.ThisLock)
             {
-                request.ContentType = "text/xml;charset=utf-8";
+
                 using (Stream streamWriter = request.GetRequestStream())
                 {
                     streamWriter.Write(requestInFormOfBytes, 0, requestInFormOfBytes.Length);
@@ -3012,7 +2845,6 @@ namespace IntegrationDoc
                 );
             string auth = authElement.ToString();
 
-            //string auth = "<authdata msg_id=\"1\" user=\"api.sign\" password=\"5faa45564a06be9cfd191310c0987bf9aeadf337\" msg_type=\"9000\" user_ip=\"127.0.0.1\" />";
             string authBase64 = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(auth));
             XDocument xdoc = new XDocument(
                 new XElement("sbapi",
@@ -3048,9 +2880,9 @@ namespace IntegrationDoc
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Const_esedo.orgURL);
             request.Method = "POST";
             HttpWebResponse response = null;
-            if (request.Method == "POST")
+            request.ContentType = "text/xml;charset=utf-8";
+            lock (this.ThisLock)
             {
-                request.ContentType = "text/xml;charset=utf-8";
                 using (Stream streamWriter = request.GetRequestStream())
                 {
                     streamWriter.Write(requestInFormOfBytes, 0, requestInFormOfBytes.Length);
@@ -3095,7 +2927,6 @@ namespace IntegrationDoc
                 );
             string auth = authElement.ToString();
 
-            //string auth = "<authdata msg_id=\"1\" user=\"api.sign\" password=\"5faa45564a06be9cfd191310c0987bf9aeadf337\" msg_type=\"9000\" user_ip=\"127.0.0.1\" />";
             string authBase64 = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(auth));
             XDocument xdoc = new XDocument(
                 new XElement("sbapi",
@@ -3143,16 +2974,17 @@ namespace IntegrationDoc
                         )
                     )
                 );
-            string a = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n" + xdoc.ToString();
-            byte[] requestInFormOfBytes = System.Text.Encoding.UTF8.GetBytes(a);
+            string apiXMLString = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n" + xdoc.ToString();
+            byte[] requestInFormOfBytes = System.Text.Encoding.UTF8.GetBytes(apiXMLString);
             string strResponseValue = string.Empty;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Const_esedo.orgURL);
             request.Method = "POST";
-            request.Timeout = 500000;
+            request.Timeout = 50000;
             HttpWebResponse response = null;
-            if (request.Method == "POST")
+
+            request.ContentType = "text/xml;charset=utf-8";
+            lock (this.ThisLock)
             {
-                request.ContentType = "text/xml;charset=utf-8";
                 using (Stream streamWriter = request.GetRequestStream())
                 {
                     streamWriter.Write(requestInFormOfBytes, 0, requestInFormOfBytes.Length);
@@ -3187,519 +3019,403 @@ namespace IntegrationDoc
         }
         public static void UpdateDB(ControlTypeWrapper controlTypeWrapper)
         {
-            using (Model1 model1 = new Model1())
+            using (Model1 db = new Model1())
             {
+                List<nsi_control_type> nsi_Control_Types = db.nsi_control_type.ToList();
+                List<nsi_control_type> nsi_Control_Types1 = new List<nsi_control_type>();
                 foreach (ControlType k in controlTypeWrapper.NSI_CONTROL_TYPE)
                 {
-                    nsi_control_type nsi_Control_Type = model1.nsi_control_type.FirstOrDefault(p => p.guid == k.ElementGUID);
-                    if (nsi_Control_Type == null)
+                    nsi_control_type nsi_Control_Type = new nsi_control_type()
                     {
-                        nsi_Control_Type = new nsi_control_type()
-                        {
-                            code = k.code,
-                            days = k.days,
-                            guid = Convert.ToInt32(k.ElementGUID),
-                            is_marked_to_delete = k.IsMarkedToDelete,
-                            update_date = k.update_date,
-                            id = Convert.ToInt32(k.Id),
-                            name_kz = k.name_kz,
-                            name_ru = k.name_ru
-                        };
-                        model1.nsi_control_type.Add(nsi_Control_Type);
-                        model1.SaveChanges();
-                    }
-                    else
-                    {
-                        if (nsi_Control_Type.update_date < k.update_date)
-                        {
-                            nsi_Control_Type.guid = Convert.ToInt32(k.ElementGUID);
-                            nsi_Control_Type.code = k.code;
-                            nsi_Control_Type.days = k.days;
-                            nsi_Control_Type.id = Convert.ToInt32(k.Id);
-                            nsi_Control_Type.is_marked_to_delete = k.IsMarkedToDelete;
-                            nsi_Control_Type.name_kz = k.name_kz;
-                            nsi_Control_Type.name_ru = k.name_ru;
-                            nsi_Control_Type.update_date = k.update_date;
-                            model1.SaveChanges();
-                        }
-                    }
+                        code = k.code,
+                        days = k.days,
+                        guid = Convert.ToInt32(k.ElementGUID),
+                        is_marked_to_delete = k.IsMarkedToDelete,
+                        update_date = k.update_date,
+                        id = Convert.ToInt32(k.Id),
+                        name_kz = k.name_kz,
+                        name_ru = k.name_ru
+                    };
+                    nsi_Control_Types1.Add(nsi_Control_Type);
                 }
+                IEnumerable<nsi_control_type> nsi_control_type_inter = nsi_Control_Types.Intersect(nsi_Control_Types1, new ComparerDB<nsi_control_type>());
+                db.nsi_control_type.RemoveRange(nsi_control_type_inter);
+                db.nsi_control_type.AddRange(nsi_Control_Types1);
+                db.SaveChanges();
             }
         }
         public static void UpdateDB(DocumentCharacterWrapper documentCharacterWrapper)
         {
-            using (Model1 model1 = new Model1())
+            using (Model1 db = new Model1())
             {
+                List<nsi_characters> nsi_Characters = db.nsi_characters.ToList();
+                List<nsi_characters> nsi_Characters1 = new List<nsi_characters>();
                 foreach (DocumentCharacter k in documentCharacterWrapper.NSI_CHARACTERS)
                 {
-                    nsi_characters nsi_Characters = model1.nsi_characters.FirstOrDefault(p => p.code == k.code);
-                    if (nsi_Characters == null)
+                    nsi_characters nsi_Character = new nsi_characters()
                     {
-                        nsi_Characters = new nsi_characters()
-                        {
-                            code = k.code,
-                            category_code = null,
-                            guid = Convert.ToInt32(k.ElementGUID),
-                            is_marked_to_delete = k.IsMarkedToDelete,
-                            update_date = k.update_date,
-                            id = Convert.ToInt32(k.Id),
-                            name_kz = k.name_kz,
-                            name_ru = k.name_ru
-                        };
-                        model1.nsi_characters.Add(nsi_Characters);
-                        model1.SaveChanges();
-                    }
-                    else
-                    {
-                        if (nsi_Characters.update_date < k.update_date)
-                        {
-                            nsi_Characters.guid = Convert.ToInt32(k.ElementGUID);
-                            nsi_Characters.code = k.code;
-                            nsi_Characters.category_code = null;
-                            nsi_Characters.id = Convert.ToInt32(k.Id);
-                            nsi_Characters.is_marked_to_delete = k.IsMarkedToDelete;
-                            nsi_Characters.name_kz = k.name_kz;
-                            nsi_Characters.name_ru = k.name_ru;
-                            nsi_Characters.update_date = k.update_date;
-                            try
-                            {
-                                model1.SaveChanges();
-                            }
-                            catch(Exception ex)
-                            {
-                                string r = ex.Message;
-                            }
-                        }
-                    }
+                        code = k.code,
+                        category_code = null,
+                        guid = Convert.ToInt32(k.ElementGUID),
+                        is_marked_to_delete = k.IsMarkedToDelete,
+                        update_date = k.update_date,
+                        id = Convert.ToInt32(k.Id),
+                        name_kz = k.name_kz,
+                        name_ru = k.name_ru
+                    };
+                    nsi_Characters1.Add(nsi_Character);
                 }
+                IEnumerable<nsi_characters> nsi_characters_inter = nsi_Characters.Intersect(nsi_Characters1, new ComparerDB<nsi_characters>());
+                db.nsi_characters.RemoveRange(nsi_characters_inter);
+                db.nsi_characters.AddRange(nsi_Characters1);
+                db.SaveChanges();
             }
         }
         public static void UpdateDB(PRActionWrapper pRActionWrapper)
         {
-            using (Model1 model1 = new Model1())
+            using (Model1 db = new Model1())
             {
+                List<nsi_actions> nsi_Actions = db.nsi_actions.ToList();
+                List<nsi_actions> nsi_Actions1 = new List<nsi_actions>();
                 foreach (PRAction k in pRActionWrapper.NSI_ACTIONS)
                 {
-                    nsi_actions nsi_Actions = model1.nsi_actions.FirstOrDefault(p => p.guid == k.ElementGUID);
-                    if (nsi_Actions == null)
+                    nsi_actions nsi_Action = new nsi_actions()
                     {
-                        nsi_Actions = new nsi_actions()
-                        {
-                            code = k.code,
-                            guid = Convert.ToInt32(k.ElementGUID),
-                            is_marked_to_delete = k.IsMarkedToDelete,
-                            update_date = k.update_date,
-                            id = Convert.ToInt32(k.Id),
-                            name_kz = k.name_kz,
-                            name_ru = k.name_ru
-                        };
-                        model1.nsi_actions.Add(nsi_Actions);
-                        model1.SaveChanges();
-                    }
-                    else
-                    {
-                        if (nsi_Actions.update_date < k.update_date)
-                        {
-                            nsi_Actions.guid = Convert.ToInt32(k.ElementGUID);
-                            nsi_Actions.code = k.code;
-                            nsi_Actions.id = Convert.ToInt32(k.Id);
-                            nsi_Actions.is_marked_to_delete = k.IsMarkedToDelete;
-                            nsi_Actions.name_kz = k.name_kz;
-                            nsi_Actions.name_ru = k.name_ru;
-                            nsi_Actions.update_date = k.update_date;
-                            model1.SaveChanges();
-                        }
-                    }
+                        code = k.code,
+                        guid = Convert.ToInt32(k.ElementGUID),
+                        is_marked_to_delete = k.IsMarkedToDelete,
+                        update_date = k.update_date,
+                        id = Convert.ToInt32(k.Id),
+                        name_kz = k.name_kz,
+                        name_ru = k.name_ru
+                    };
+                    nsi_Actions1.Add(nsi_Action);
                 }
+                IEnumerable<nsi_actions> nsi_actions_inter = nsi_Actions.Intersect(nsi_Actions1, new ComparerDB<nsi_actions>());
+                db.nsi_actions.RemoveRange(nsi_actions_inter);
+                db.nsi_actions.AddRange(nsi_Actions1);
+                db.SaveChanges();
             }
         }
         public static void UpdateDB(PeopleCategoryWrapper peopleCategoryWrapper)
         {
-            using (Model1 model1 = new Model1())
+            using (Model1 db = new Model1())
             {
+                List<nsi_applicant> nsi_Applicants = db.nsi_applicant.ToList();
+                List<nsi_applicant> nsi_Applicants1 = new List<nsi_applicant>();
                 foreach (PeopleCategory k in peopleCategoryWrapper.NSI_APPLICANT)
                 {
-                    nsi_applicant nsi_Applicant = model1.nsi_applicant.FirstOrDefault(p => p.guid == k.ElementGUID);
-                    if (nsi_Applicant == null)
+                    nsi_applicant nsi_Applicant = new nsi_applicant()
                     {
-                        nsi_Applicant = new nsi_applicant()
-                        {
-                            code = k.code,
-                            guid = Convert.ToInt32(k.ElementGUID),
-                            is_marked_to_delete = k.IsMarkedToDelete,
-                            update_date = k.update_date,
-                            id = Convert.ToInt32(k.Id),
-                            name_kz = k.name_kz,
-                            name_ru = k.name_ru
-                        };
-                        model1.nsi_applicant.Add(nsi_Applicant);
-                        model1.SaveChanges();
-                    }
-                    else
-                    {
-                        if (nsi_Applicant.update_date < k.update_date)
-                        {
-                            nsi_Applicant.guid = Convert.ToInt32(k.ElementGUID);
-                            nsi_Applicant.code = k.code;
-                            nsi_Applicant.id = Convert.ToInt32(k.Id);
-                            nsi_Applicant.is_marked_to_delete = k.IsMarkedToDelete;
-                            nsi_Applicant.name_kz = k.name_kz;
-                            nsi_Applicant.name_ru = k.name_ru;
-                            nsi_Applicant.update_date = k.update_date;
-                            model1.SaveChanges();
-                        }
-                    }
+                        code = k.code,
+                        guid = Convert.ToInt32(k.ElementGUID),
+                        is_marked_to_delete = k.IsMarkedToDelete,
+                        update_date = k.update_date,
+                        id = Convert.ToInt32(k.Id),
+                        name_kz = k.name_kz,
+                        name_ru = k.name_ru
+                    };
+                    nsi_Applicants1.Add(nsi_Applicant);
                 }
+                IEnumerable<nsi_applicant> nsi_applicant_inter = nsi_Applicants.Intersect(nsi_Applicants1, new ComparerDB<nsi_applicant>());
+                db.nsi_applicant.RemoveRange(nsi_applicant_inter);
+                db.nsi_applicant.AddRange(nsi_Applicants1);
+                db.SaveChanges();
             }
         }
         public static void UpdateDB(DocumentTypeWrapper documentTypeWrapper)
         {
-            using (Model1 model1 = new Model1())
+            using (Model1 db = new Model1())
             {
+                List<nsi_doc_type> nsi_Doc_Types = db.nsi_doc_type.ToList();
+                List<nsi_doc_type> nsi_Doc_Types1 = new List<nsi_doc_type>();
                 foreach (DocumentType k in documentTypeWrapper.NSI_DOC_TYPE)
                 {
-                    nsi_doc_type nsi_Doc_Type = model1.nsi_doc_type.FirstOrDefault(p => p.guid == k.ElementGUID);
-                    if (nsi_Doc_Type == null)
+                    nsi_doc_type nsi_Doc_Type = new nsi_doc_type()
                     {
-                        nsi_Doc_Type = new nsi_doc_type()
-                        {
-                            code = k.code,
-                            category_code = null,
-                            guid = Convert.ToInt32(k.ElementGUID),
-                            is_marked_to_delete = k.IsMarkedToDelete,
-                            update_date = k.update_date,
-                            id = Convert.ToInt32(k.Id),
-                            name_kz = k.name_kz,
-                            name_ru = k.name_ru
-                        };
-                        model1.nsi_doc_type.Add(nsi_Doc_Type);
-                        model1.SaveChanges();
-                    }
-                    else
-                    {
-                        if (nsi_Doc_Type.update_date < k.update_date)
-                        {
-                            nsi_Doc_Type.guid = Convert.ToInt32(k.ElementGUID);
-                            nsi_Doc_Type.code = k.code;
-                            nsi_Doc_Type.category_code = null;
-                            nsi_Doc_Type.id = Convert.ToInt32(k.Id);
-                            nsi_Doc_Type.is_marked_to_delete = k.IsMarkedToDelete;
-                            nsi_Doc_Type.name_kz = k.name_kz;
-                            nsi_Doc_Type.name_ru = k.name_ru;
-                            nsi_Doc_Type.update_date = k.update_date;
-                            model1.SaveChanges();
-                        }
-                    }
+                        code = k.code,
+                        category_code = null,
+                        guid = Convert.ToInt32(k.ElementGUID),
+                        is_marked_to_delete = k.IsMarkedToDelete,
+                        update_date = k.update_date,
+                        id = Convert.ToInt32(k.Id),
+                        name_kz = k.name_kz,
+                        name_ru = k.name_ru
+                    };
+                    nsi_Doc_Types1.Add(nsi_Doc_Type);
                 }
+                IEnumerable<nsi_doc_type> nsi_doc_type_inter = nsi_Doc_Types.Intersect(nsi_Doc_Types1, new ComparerDB<nsi_doc_type>());
+                db.nsi_doc_type.RemoveRange(nsi_doc_type_inter);
+                db.nsi_doc_type.AddRange(nsi_Doc_Types1);
+                db.SaveChanges();
             }
         }
         public static void UpdateDB(ExecutionResultWrapper executionResultWrapper)
         {
-            using (Model1 model1 = new Model1())
+            using (Model1 db = new Model1())
             {
+                List<nsi_exres_type> nsi_Exres_Types = db.nsi_exres_type.ToList();
+                List<nsi_exres_type> nsi_Exres_Types1 = new List<nsi_exres_type>();
                 foreach (ExecutionResult k in executionResultWrapper.NSI_EXRES_TYPE)
                 {
-                    nsi_exres_type nsi_Exres_Type = model1.nsi_exres_type.FirstOrDefault(p => p.guid == k.ElementGUID);
-                    if (nsi_Exres_Type == null)
+                    nsi_exres_type nsi_Exres_Type = new nsi_exres_type()
                     {
-                        nsi_Exres_Type = new nsi_exres_type()
-                        {
-                            code = k.code,
-                            category = k.category,
-                            guid = Convert.ToInt32(k.ElementGUID),
-                            is_marked_to_delete = k.IsMarkedToDelete,
-                            update_date = k.update_date,
-                            id = Convert.ToInt32(k.Id),
-                            name_kz = k.name_kz,
-                            name_ru = k.name_ru
-                        };
-                        model1.nsi_exres_type.Add(nsi_Exres_Type);
-                        model1.SaveChanges();
-                    }
-                    else
-                    {
-                        if (nsi_Exres_Type.update_date < k.update_date)
-                        {
-                            nsi_Exres_Type.guid = Convert.ToInt32(k.ElementGUID);
-                            nsi_Exres_Type.code = k.code;
-                            nsi_Exres_Type.category = k.category;
-                            nsi_Exres_Type.id = Convert.ToInt32(k.Id);
-                            nsi_Exres_Type.is_marked_to_delete = k.IsMarkedToDelete;
-                            nsi_Exres_Type.name_kz = k.name_kz;
-                            nsi_Exres_Type.name_ru = k.name_ru;
-                            nsi_Exres_Type.update_date = k.update_date;
-                            model1.SaveChanges();
-                        }
-                    }
+                        code = k.code,
+                        category = k.category,
+                        guid = Convert.ToInt32(k.ElementGUID),
+                        is_marked_to_delete = k.IsMarkedToDelete,
+                        update_date = k.update_date,
+                        id = Convert.ToInt32(k.Id),
+                        name_kz = k.name_kz,
+                        name_ru = k.name_ru
+                    };
+                    nsi_Exres_Types1.Add(nsi_Exres_Type);
                 }
+                IEnumerable<nsi_exres_type> nsi_exres_type_inter = nsi_Exres_Types.Intersect(nsi_Exres_Types1, new ComparerDB<nsi_exres_type>());
+                db.nsi_exres_type.RemoveRange(nsi_exres_type_inter);
+                db.nsi_exres_type.AddRange(nsi_Exres_Types1);
+                db.SaveChanges();
             }
         }
         public static void UpdateDB(OrganizationWrapper organizationWrapper)
         {
-            using (Model1 model1 = new Model1())
+
+            using (Model1 db = new Model1())
             {
+                List<nsi_org> orgs = db.nsi_org.ToList();
+                List<nsi_org> nsi_Orgs = new List<nsi_org>();
                 foreach (var k in organizationWrapper.NSI_ORG)
                 {
-                    nsi_org nsi_Org = model1.nsi_org.FirstOrDefault(p => p.member == k.member);
-                    if (nsi_Org == null)
+                    nsi_org nsi_Org = new nsi_org()
                     {
-                        nsi_Org = new nsi_org()
-                        {
-                            code = k.code,
-                            abbr_kz = k.abbr_kz,
-                            abbr_ru = k.abbr_ru,
-                            childs_count = Convert.ToInt32(k.ChildsCount),
-                            is_esedo = k.isEsedo,
-                            is_ready = k.isReady,
-                            member = (int?)k.member,
-                            parent = k.Parent,
-                            guid = Convert.ToInt32(k.ElementGUID),
-                            is_marked_to_delete = k.IsMarkedToDelete,
-                            update_date = k.update_date,
-                            id = Convert.ToInt32(k.Id),
-                            name_kz = k.name_kz,
-                            name_ru = k.name_ru
-                        };
-                        model1.nsi_org.Add(nsi_Org);
-                        model1.SaveChanges();
-                    }
-                    else
-                    {
-                        if (nsi_Org.update_date < k.update_date)
-                        {
-                            nsi_Org.guid = Convert.ToInt32(k.ElementGUID);
-                            nsi_Org.code = k.code;
-                            nsi_Org.abbr_kz = k.abbr_kz;
-                            nsi_Org.abbr_ru = k.abbr_ru;
-                            nsi_Org.childs_count = Convert.ToInt32(k.ChildsCount);
-                            nsi_Org.is_esedo = k.isEsedo;
-                            nsi_Org.is_ready = k.isReady;
-                            nsi_Org.member = (int?)k.member;
-                            nsi_Org.parent = k.Parent;
-                            //nsi_Org.id = Convert.ToInt32(k.Id);
-                            nsi_Org.is_marked_to_delete = k.IsMarkedToDelete;
-                            nsi_Org.name_kz = k.name_kz;
-                            nsi_Org.name_ru = k.name_ru;
-                            nsi_Org.update_date = k.update_date;
-                            model1.SaveChanges();
-                        }
-                    }
+                        code = k.code,
+                        abbr_kz = k.abbr_kz,
+                        abbr_ru = k.abbr_ru,
+                        childs_count = Convert.ToInt32(k.ChildsCount),
+                        is_esedo = k.isEsedo,
+                        is_ready = k.isReady,
+                        member = (int)k.member,
+                        parent = k.Parent,
+                        guid = Convert.ToInt32(k.ElementGUID),
+                        is_marked_to_delete = k.IsMarkedToDelete,
+                        update_date = k.update_date,
+                        id = Convert.ToInt32(k.Id),
+                        name_kz = k.name_kz,
+                        name_ru = k.name_ru,
+                        qg = k.QGIdentifier
+                    };
+                    nsi_Orgs.Add(nsi_Org);
                 }
+                IEnumerable<nsi_org> nsi_inter = orgs.Intersect(nsi_Orgs, new ComparerDB<nsi_org>());
+                var temp = db.nsi_org.RemoveRange(nsi_inter);
+                db.SaveChanges();
+                var temp2 = db.nsi_org.AddRange(nsi_Orgs);
+                db.SaveChanges();
             }
         }
         public static void UpdateDB(OrganizationTypeWrapper organizationTypeWrapper)
         {
-            using (Model1 model1 = new Model1())
+            using (Model1 db = new Model1())
             {
+                List<nsi_org_types> orgTypes = db.nsi_org_types.ToList();
+                List<nsi_org_types> nsi_OrgTypes = new List<nsi_org_types>();
+
                 foreach (var k in organizationTypeWrapper.NSI_ORG_TYPES)
                 {
-                    nsi_org_types nsi_Org_Types = model1.nsi_org_types.FirstOrDefault(p => p.guid == k.ElementGUID);
-                    if (nsi_Org_Types == null)
+                    nsi_org_types nsi_Org_Types = new nsi_org_types()
                     {
-                        nsi_Org_Types = new nsi_org_types()
-                        {
-                            code = k.code,
-                            guid = Convert.ToInt32(k.ElementGUID),
-                            is_marked_to_delete = k.IsMarkedToDelete,
-                            update_date = k.update_date,
-                            id = Convert.ToInt32(k.Id),
-                            name_kz = k.name_kz,
-                            name_ru = k.name_ru
-                        };
-                        model1.nsi_org_types.Add(nsi_Org_Types);
-                        model1.SaveChanges();
-                    }
-                    else
-                    {
-                        if (nsi_Org_Types.update_date < k.update_date)
-                        {
-                            nsi_Org_Types.guid = Convert.ToInt32(k.ElementGUID);
-                            nsi_Org_Types.code = k.code;
-                            nsi_Org_Types.id = Convert.ToInt32(k.Id);
-                            nsi_Org_Types.is_marked_to_delete = k.IsMarkedToDelete;
-                            nsi_Org_Types.name_kz = k.name_kz;
-                            nsi_Org_Types.name_ru = k.name_ru;
-                            nsi_Org_Types.update_date = k.update_date;
-                            model1.SaveChanges();
-                        }
-                    }
+                        code = k.code,
+                        guid = Convert.ToInt32(k.ElementGUID),
+                        is_marked_to_delete = k.IsMarkedToDelete,
+                        update_date = k.update_date,
+                        id = Convert.ToInt32(k.Id),
+                        name_kz = k.name_kz,
+                        name_ru = k.name_ru
+                    };
+                    nsi_OrgTypes.Add(nsi_Org_Types);
                 }
+                IEnumerable<nsi_org_types> nsi_org_types_inter = orgTypes.Intersect(nsi_OrgTypes, new ComparerDB<nsi_org_types>());
+                db.nsi_org_types.RemoveRange(nsi_org_types_inter);
+                db.nsi_org_types.AddRange(nsi_OrgTypes);
+                db.SaveChanges();
             }
         }
         public static void UpdateDB(PostWrapper postWrapper)
         {
-            using (Model1 model1 = new Model1())
+            using (Model1 db = new Model1())
             {
+                List<nsi_pos_type> nsi_Pos_Types = db.nsi_pos_type.ToList();
+                List<nsi_pos_type> nsi_Pos_Types1 = new List<nsi_pos_type>();
                 foreach (var k in postWrapper.NSI_POS_TYPE)
                 {
-                    nsi_pos_type nsi_Pos_Type = model1.nsi_pos_type.FirstOrDefault(p => p.guid == k.ElementGUID);
-                    if (nsi_Pos_Type == null)
+                    nsi_pos_type nsi_Pos_Type = new nsi_pos_type()
                     {
-                        nsi_Pos_Type = new nsi_pos_type()
-                        {
-                            code = k.code,
-                            guid = Convert.ToInt32(k.ElementGUID),
-                            is_marked_to_delete = k.IsMarkedToDelete,
-                            update_date = k.update_date,
-                            id = Convert.ToInt32(k.Id),
-                            name_kz = k.name_kz,
-                            name_ru = k.name_ru
-                        };
-                        model1.nsi_pos_type.Add(nsi_Pos_Type);
-                        model1.SaveChanges();
-                    }
-                    else
-                    {
-                        if (nsi_Pos_Type.update_date < k.update_date)
-                        {
-                            nsi_Pos_Type.guid = Convert.ToInt32(k.ElementGUID);
-                            nsi_Pos_Type.code = k.code;
-                            nsi_Pos_Type.id = Convert.ToInt32(k.Id);
-                            nsi_Pos_Type.is_marked_to_delete = k.IsMarkedToDelete;
-                            nsi_Pos_Type.name_kz = k.name_kz;
-                            nsi_Pos_Type.name_ru = k.name_ru;
-                            nsi_Pos_Type.update_date = k.update_date;
-                            model1.SaveChanges();
-                        }
-                    }
+                        code = k.code,
+                        guid = Convert.ToInt32(k.ElementGUID),
+                        is_marked_to_delete = k.IsMarkedToDelete,
+                        update_date = k.update_date,
+                        id = Convert.ToInt32(k.Id),
+                        name_kz = k.name_kz,
+                        name_ru = k.name_ru
+                    };
+                    nsi_Pos_Types1.Add(nsi_Pos_Type);
                 }
+                IEnumerable<nsi_pos_type> nsi_pos_types_inter = nsi_Pos_Types.Intersect(nsi_Pos_Types1, new ComparerDB<nsi_pos_type>());
+                db.nsi_pos_type.RemoveRange(nsi_pos_types_inter);
+                db.nsi_pos_type.AddRange(nsi_Pos_Types1);
+                db.SaveChanges();
             }
         }
         public static void UpdateDB(DocumentReasonWrapper documentReasonWrapper)
         {
-            using (Model1 model1 = new Model1())
+            using (Model1 db = new Model1())
             {
+                List<nsi_reasons> nsi_Reasons = db.nsi_reasons.ToList();
+                List<nsi_reasons> nsi_Reasons1 = new List<nsi_reasons>();
                 foreach (var k in documentReasonWrapper.NSI_REASONS)
                 {
-                    nsi_reasons nsi_Reasons = model1.nsi_reasons.FirstOrDefault(p => p.guid == k.ElementGUID);
-                    if (nsi_Reasons == null)
+                    nsi_reasons nsi_Reason = new nsi_reasons()
                     {
-                        nsi_Reasons = new nsi_reasons()
-                        {
-                            code = k.code,
-                            guid = Convert.ToInt32(k.ElementGUID),
-                            is_marked_to_delete = k.IsMarkedToDelete,
-                            update_date = k.update_date,
-                            id = Convert.ToInt32(k.Id),
-                            name_kz = k.name_kz,
-                            name_ru = k.name_ru
-                        };
-                        model1.nsi_reasons.Add(nsi_Reasons);
-                        model1.SaveChanges();
-                    }
-                    else
-                    {
-                        if (nsi_Reasons.update_date < k.update_date)
-                        {
-                            nsi_Reasons.guid = Convert.ToInt32(k.ElementGUID);
-                            nsi_Reasons.code = k.code;
-                            nsi_Reasons.id = Convert.ToInt32(k.Id);
-                            nsi_Reasons.is_marked_to_delete = k.IsMarkedToDelete;
-                            nsi_Reasons.name_kz = k.name_kz;
-                            nsi_Reasons.name_ru = k.name_ru;
-                            nsi_Reasons.update_date = k.update_date;
-                            model1.SaveChanges();
-                        }
-                    }
+                        code = k.code,
+                        guid = Convert.ToInt32(k.ElementGUID),
+                        is_marked_to_delete = k.IsMarkedToDelete,
+                        update_date = k.update_date,
+                        id = Convert.ToInt32(k.Id),
+                        name_kz = k.name_kz,
+                        name_ru = k.name_ru
+                    };
+                    nsi_Reasons1.Add(nsi_Reason);
                 }
+                IEnumerable<nsi_reasons> nsi_reasons_inter = nsi_Reasons.Intersect(nsi_Reasons1, new ComparerDB<nsi_reasons>());
+                db.nsi_reasons.RemoveRange(nsi_reasons_inter);
+                db.nsi_reasons.AddRange(nsi_Reasons1);
+                db.SaveChanges();
             }
         }
         public static void UpdateDB(RegionWrapper regionWrapper)
         {
-            using (Model1 model1 = new Model1())
+            using (Model1 db = new Model1())
             {
+                List<nsi_regions> nsi_Regions = db.nsi_regions.ToList();
+                List<nsi_regions> nsi_Regions1 = new List<nsi_regions>();
                 foreach (var k in regionWrapper.NSI_REGIONS)
                 {
-                    nsi_regions nsi_Regions = model1.nsi_regions.FirstOrDefault(p => p.guid == k.ElementGUID);
-                    if (nsi_Regions == null)
+                    nsi_regions nsi_Region = new nsi_regions()
                     {
-                        nsi_Regions = new nsi_regions()
-                        {
-                            code = k.code,
-                            region_type = k.region_type,
-                            guid = Convert.ToInt32(k.ElementGUID),
-                            is_marked_to_delete = k.IsMarkedToDelete,
-                            update_date = k.update_date,
-                            id = Convert.ToInt32(k.Id),
-                            name_kz = k.name_kz,
-                            name_ru = k.name_ru
-                        };
-                        model1.nsi_regions.Add(nsi_Regions);
-                        model1.SaveChanges();
-                    }
-                    else
+                        code = k.code,
+                        region_type = k.region_type,
+                        guid = Convert.ToInt32(k.ElementGUID),
+                        is_marked_to_delete = k.IsMarkedToDelete,
+                        update_date = k.update_date,
+                        id = Convert.ToInt32(k.Id),
+                        name_kz = k.name_kz,
+                        name_ru = k.name_ru
+                    };
+                    nsi_Regions1.Add(nsi_Region);
+                }
+                IEnumerable<nsi_regions> nsi_regions_inter = nsi_Regions.Intersect(nsi_Regions1, new ComparerDB<nsi_regions>());
+                db.nsi_regions.RemoveRange(nsi_regions_inter);
+                db.nsi_regions.AddRange(nsi_Regions1);
+                db.SaveChanges();
+            }
+        }
+
+        public string GetDictionary(NsiSync.GetDictionaryRequest getDictionaryRequest)
+        {
+            NsiSync.DictionaryPortClient dictionaryPortClient = new NsiSync.DictionaryPortClient();
+            NsiSync.GetDictionaryResponse getDictionaryResponse = new GetDictionaryResponse();
+
+            if (getDictionaryRequest.sender == Const_esedo.sender)
+            {
+                //try
+                {
+                    ServicePointManager.ServerCertificateValidationCallback = (snder, cert, chain, error) => true;
+                    getDictionaryResponse = dictionaryPortClient.GetDictionary(getDictionaryRequest);
+                    foreach (object i in getDictionaryResponse.data)
                     {
-                        if (nsi_Regions.update_date < k.update_date)
+                        Type j = i.GetType();
+                        switch (j.Name)
                         {
-                            nsi_Regions.guid = Convert.ToInt32(k.ElementGUID);
-                            nsi_Regions.code = k.code;
-                            nsi_Regions.region_type = k.region_type;
-                            nsi_Regions.id = Convert.ToInt32(k.Id);
-                            nsi_Regions.is_marked_to_delete = k.IsMarkedToDelete;
-                            nsi_Regions.name_kz = k.name_kz;
-                            nsi_Regions.name_ru = k.name_ru;
-                            nsi_Regions.update_date = k.update_date;
-                            model1.SaveChanges();
+                            case "ControlTypeWrapper":
+                                UpdateDB((ControlTypeWrapper)i);
+                                break;
+                            case "DocumentCharacterWrapper":
+                                UpdateDB((DocumentCharacterWrapper)i);
+                                break;
+                            case "PRActionWrapper":
+                                UpdateDB((PRActionWrapper)i);
+                                break;
+                            case "PeopleCategoryWrapper":
+                                UpdateDB((PeopleCategoryWrapper)i);
+                                break;
+                            case "DocumentTypeWrapper":
+                                UpdateDB((DocumentTypeWrapper)i);
+                                break;
+                            case "ExecutionResultWrapper":
+                                UpdateDB((ExecutionResultWrapper)i);
+                                break;
+                            case "OrganizationWrapper":
+                                UpdateDB((OrganizationWrapper)i);
+                                break;
+                            case "OrganizationTypeWrapper":
+                                UpdateDB((OrganizationTypeWrapper)i);
+                                break;
+                            case "PostWrapper":
+                                UpdateDB((PostWrapper)i);
+                                break;
+                            case "DocumentReasonWrapper":
+                                UpdateDB((DocumentReasonWrapper)i);
+                                break;
+                            case "RegionWrapper":
+                                UpdateDB((RegionWrapper)i);
+                                break;
                         }
                     }
                 }
+                //catch (Exception ex)
+                //{
+                //    return ex.Message;
+                //}
             }
+            return getDictionaryResponse.data.Length.ToString();
         }
-        public NsiUpdate.GetDictionaryResponse GetDictionary(NsiUpdate.GetDictionaryRequest GetDictionaryRequest)
+
+        public string wordDocVersion(WordBase64File wordFileBase64)
         {
-            NsiUpdate.GetDictionaryResponse response = new NsiUpdate.GetDictionaryResponse();
-            NsiUpdate.DictionaryPortClient portClient = new NsiUpdate.DictionaryPortClient();
-            try
+            System.Xml.Linq.XDocument coreFileProperties;
+            System.Xml.Linq.XDocument extFileProperties;
+            System.Xml.Linq.XDocument customFileProperties;
+
+            byte[] file = String.IsNullOrEmpty(wordFileBase64.base64_data)? null: Convert.FromBase64String(wordFileBase64.base64_data);
+            if (file != null)
             {
-                response = portClient.GetDictionary(GetDictionaryRequest);
-                foreach (object i in response.data)
+                Stream stream = new MemoryStream(file);
+                using (DocumentFormat.OpenXml.Packaging.WordprocessingDocument wordDoc = DocumentFormat.OpenXml.Packaging.WordprocessingDocument.Open(stream, false))
                 {
-                    Type j = i.GetType();
-                    switch (j.Name)
+                    // Load the properties from the XML files into the XDocument objects
+                    DocumentFormat.OpenXml.Packaging.CoreFilePropertiesPart corePart = wordDoc.CoreFilePropertiesPart;
+                    coreFileProperties = System.Xml.Linq.XDocument.Load(corePart.GetStream());
+                    DocumentFormat.OpenXml.Packaging.ExtendedFilePropertiesPart appPart = wordDoc.ExtendedFilePropertiesPart;
+                    DocumentFormat.OpenXml.Packaging.CustomFilePropertiesPart customPart = wordDoc.CustomFilePropertiesPart;
+                    extFileProperties = System.Xml.Linq.XDocument.Load(appPart.GetStream());
+                    customFileProperties = System.Xml.Linq.XDocument.Load(customPart.GetStream());
+                    foreach (System.Xml.Linq.XElement ele in customFileProperties.Root.Descendants())
                     {
-                        case "ControlTypeWrapper":
-                            UpdateDB((ControlTypeWrapper)i);
-                            break;
-                        case "DocumentCharacterWrapper":
-                            UpdateDB((DocumentCharacterWrapper)i);
-                            break;
-                        case "PRActionWrapper":
-                            UpdateDB((PRActionWrapper)i);
-                            break;
-                        case "PeopleCategoryWrapper":
-                            UpdateDB((PeopleCategoryWrapper)i);
-                            break;
-                        case "DocumentTypeWrapper":
-                            UpdateDB((DocumentTypeWrapper)i);
-                            break;
-                        case "ExecutionResultWrapper":
-                            UpdateDB((ExecutionResultWrapper)i);
-                            break;
-                        case "OrganizationWrapper":
-                            UpdateDB((OrganizationWrapper)i);
-                            break;
-                        case "OrganizationTypeWrapper":
-                            UpdateDB((OrganizationTypeWrapper)i);
-                            break;
-                        case "PostWrapper":
-                            UpdateDB((PostWrapper)i);
-                            break;
-                        case "DocumentReasonWrapper":
-                            UpdateDB((DocumentReasonWrapper)i);
-                            break;
-                        case "RegionWrapper":
-                            UpdateDB((RegionWrapper)i);
-                            break;
+                        if ((ele.Attribute("name")?.Value ?? ele.Name.LocalName )== "Номер документа")
+                        {
+                            return ele.Value;
+                            // ele.Name.LocalName, ele.Value;
+                        }
                     }
                 }
-                    
-                response.currentDate = DateTime.Now;
+                
             }
-            catch (Exception ex)
-            {
-                response.currentDate = DateTime.Now;
-            }
-            return response;
+            return "no version";
+        }
+
+        public BaiterekMessageOutNew GatewayTest(BaiterekMessageOutNew baiterekMessage)
+        {
+            return baiterekMessage;
         }
     }
 }

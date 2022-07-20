@@ -41,6 +41,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.15.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.15.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -70,6 +73,7 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Connected Services\DocReceiver\IntegrationDoc.DocReceiver.qujatGatewayDelivered.datasource">
@@ -108,16 +112,15 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="Connected Services\NsiUpdate\ensi-sync.wsdl" />
-    <Content Include="Connected Services\NsiUpdate\IntegrationDoc.NsiUpdate.GetDictionaryResponse.datasource">
+    <None Include="Connected Services\NsiSync\configuration91.svcinfo" />
+    <None Include="Connected Services\NsiSync\configuration.svcinfo" />
+    <Content Include="Connected Services\NsiSync\IntegrationDoc.NsiSync.GetDictionaryResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Content>
-    <Content Include="Connected Services\NsiUpdate\IntegrationDoc.NsiUpdate.GetDictionaryResponse1.datasource">
+    <Content Include="Connected Services\NsiSync\IntegrationDoc.NsiSync.GetDictionaryResponse1.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Content>
-    <None Include="Connected Services\NsiUpdate\configuration91.svcinfo" />
-    <None Include="Connected Services\NsiUpdate\configuration.svcinfo" />
-    <None Include="Connected Services\NsiUpdate\Reference.svcmap">
+    <None Include="Connected Services\NsiSync\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -125,12 +128,19 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaiterekMessageFiles.cs" />
-    <Compile Include="BaiterekMessageIn.cs" />
-    <Compile Include="BaiterekMessageInNew.cs" />
-    <Compile Include="BaiterekMessageOut.cs" />
-    <Compile Include="BaiterekMessageState.cs" />
-    <Compile Include="BaiterekMessagePEP.cs" />
+    <Compile Include="Models\WordBase64File.cs" />
+    <Compile Include="NSI\ComparerDB.cs" />
+    <Compile Include="Connected Services\NsiSync\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BaiterekMessageFiles.cs" />
+    <Compile Include="Models\BaiterekMessageIn.cs" />
+    <Compile Include="Models\BaiterekMessageInNew.cs" />
+    <Compile Include="Models\BaiterekMessageOut.cs" />
+    <Compile Include="Models\BaiterekMessageState.cs" />
+    <Compile Include="Models\BaiterekMessagePEP.cs" />
     <Compile Include="Connected Services\DocReceiver\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -146,22 +156,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Connected Services\NsiUpdate\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="Const_esedo.cs" />
-    <Compile Include="DocSender_Extension.cs" />
-    <Compile Include="EsedoStateMessage.cs" />
-    <Compile Include="Exceptions_ESEDO.cs" />
-    <Compile Include="Hed_extension.cs" />
-    <Compile Include="NSI\DocTypeMap.cs" />
-    <Compile Include="NSI\doc_typeBaiterek.cs" />
+    <Compile Include="Models\Const_esedo.cs" />
+    <Compile Include="AddOns\DocSender_Extension.cs" />
+    <Compile Include="NSI\EsedoStateMessage.cs" />
+    <Compile Include="AddOns\Exceptions_ESEDO.cs" />
+    <Compile Include="AddOns\Hed_extension.cs" />
     <Compile Include="Esedo.svc.cs">
       <DependentUpon>Esedo.svc</DependentUpon>
     </Compile>
-    <Compile Include="Hed.cs" />
+    <Compile Include="AddOns\Hed.cs" />
     <Compile Include="IEsedo.cs" />
     <Compile Include="NSI\Model1.cs" />
     <Compile Include="NSI\nsi_actions.cs" />
@@ -175,19 +178,19 @@
     <Compile Include="NSI\nsi_pos_type.cs" />
     <Compile Include="NSI\nsi_reasons.cs" />
     <Compile Include="NSI\nsi_regions.cs" />
-    <Compile Include="OrgTypeMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Result.cs" />
-    <Compile Include="sbapi.cs" />
-    <Compile Include="Serializer.cs" />
-    <Compile Include="StringWriter_.cs" />
-    <Compile Include="Trans.cs" />
-    <Compile Include="Trans2.cs" />
+    <Compile Include="AddOns\Result.cs" />
+    <Compile Include="NSI\sbapi.cs" />
+    <Compile Include="AddOns\Serializer.cs" />
+    <Compile Include="AddOns\StringWriter_.cs" />
+    <Compile Include="AddOns\Trans.cs" />
+    <Compile Include="AddOns\Trans2.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Connected Services\NsiSync\updated ensi-sync wsdl.wsdl" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Web.Debug.config">
@@ -204,7 +207,7 @@
     <WCFMetadataStorage Include="Connected Services\DocReceiver\" />
     <WCFMetadataStorage Include="Connected Services\DocSender\" />
     <WCFMetadataStorage Include="Connected Services\HedReference\" />
-    <WCFMetadataStorage Include="Connected Services\NsiUpdate\" />
+    <WCFMetadataStorage Include="Connected Services\NsiSync\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

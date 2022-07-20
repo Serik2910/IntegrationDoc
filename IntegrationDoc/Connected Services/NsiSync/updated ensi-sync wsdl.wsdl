@@ -5,8 +5,9 @@
       <xs:element name="GetDictionaryRequest">
         <xs:complexType>
           <xs:sequence>
+            <xs:element name="sender" type="xs:string" />
+            <xs:element maxOccurs="unbounded" name="dictionaries" type="nsi:dictionary" />
             <xs:element name="currentDate" nillable="true" type="xs:dateTime" />
-            <xs:element maxOccurs="unbounded" name="dictionaries" nillable="true" type="nsi:dictionary" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -86,18 +87,22 @@
       <xs:complexType name="Organization">
         <xs:sequence>
           <xs:element name="Id" type="xs:integer" />
-          <xs:element name="Parent" type="xs:integer" />
-          <xs:element name="ChildsCount" type="xs:integer" />
-          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
+          <xs:element name="EnsiId" type="xs:integer" />
           <xs:element name="name_ru" type="xs:string" />
           <xs:element name="name_kz" type="xs:string" />
           <xs:element name="abbr_ru" type="xs:string" />
           <xs:element name="abbr_kz" type="xs:string" />
           <xs:element name="member" nillable="true" type="xs:decimal" />
           <xs:element name="code" type="xs:string" />
+          <xs:element name="IsMarkedToDelete" type="xs:boolean" />
           <xs:element name="isEsedo" type="xs:string" />
           <xs:element name="isReady" type="xs:string" />
+          <xs:element name="Parent" type="xs:integer" />
+          <xs:element name="ChildsCount" type="xs:integer" />
           <xs:element name="ElementGUID" type="xs:decimal" />
+          <xs:element name="QGIdentifier" type="xs:string" />
+          <xs:element name="Address" type="xs:string" />
+          <xs:element name="PhoneNumber" type="xs:string" />
           <xs:element minOccurs="0" name="update_date" type="xs:dateTime" />
         </xs:sequence>
       </xs:complexType>
@@ -265,7 +270,7 @@
   </wsdl:binding>
   <wsdl:service name="DictionaryPortService">
     <wsdl:port name="DictionaryPortSoap11" binding="sch0:DictionaryPortSoap11">
-      <soap:address location="https://qujatgateway.kz/ensi-sync" />
+      <soap:address location="http://localhost:8181/ws" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

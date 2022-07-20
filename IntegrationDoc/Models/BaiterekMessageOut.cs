@@ -33,6 +33,7 @@ namespace IntegrationDoc
         public string o_date_event { get; set; }
         public string o_resolution_text { get; set; }
         public string o_sign_object_2 { get; set; }
+        public string o_doc_lang { get; set; }
 
         public Files[] files { get; set; }
         public class Files
@@ -77,6 +78,7 @@ namespace IntegrationDoc
         public string o_useruin { get; set; }
         public string o_doc_NoR { get; set; }
         public string o_id_portal { get; set; }
+        public string o_doc_lang { get; set; }
     }
 
 }

@@ -1,4 +1,4 @@
-namespace IntegrationDoc
+namespace IntegrationDoc.NSI
 {
     using System;
     using System.Collections.Generic;
@@ -7,9 +7,8 @@ namespace IntegrationDoc
     using System.Data.Entity.Spatial;
 
     [Table("dictionaries.nsi_org")]
-    public partial class nsi_org
+    public partial class nsi_org : IHasGuid
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int id { get; set; }
 
         [StringLength(150)]
@@ -21,7 +20,9 @@ namespace IntegrationDoc
         [StringLength(50)]
         public string code { get; set; }
 
-        public int? member { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int member { get; set; }
 
         [StringLength(500)]
         public string name_kz { get; set; }
@@ -46,5 +47,8 @@ namespace IntegrationDoc
         public string is_ready { get; set; }
 
         public int? guid { get; set; }
+
+        [StringLength(50)]
+        public string qg { get; set; }
     }
 }

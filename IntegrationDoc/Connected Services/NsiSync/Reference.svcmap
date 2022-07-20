@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="77f5573c-b41a-43f2-b21d-2b77d2986a7e" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="522815ac-81a0-4843-a5b3-e00ff935f8c9" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="C:\openssl\ensi-sync.wsdl.wsdl" Protocol="file" SourceId="1" />
+    <MetadataSource Address="C:\openssl\updated ensi-sync wsdl.wsdl" Protocol="file" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="ensi-sync.wsdl" MetadataType="Wsdl" ID="2c95dfbf-1e4a-49ab-b611-7d37297f7a48" SourceId="1" SourceUrl="file:///C:/openssl/ensi-sync.wsdl.wsdl" />
+    <MetadataFile FileName="updated ensi-sync wsdl.wsdl" MetadataType="Wsdl" ID="1620906e-ed0d-4067-8c48-69337367bb90" SourceId="1" SourceUrl="file:///C:/openssl/updated ensi-sync wsdl.wsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

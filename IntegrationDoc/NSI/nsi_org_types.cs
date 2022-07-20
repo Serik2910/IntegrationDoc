@@ -1,4 +1,4 @@
-namespace IntegrationDoc
+namespace IntegrationDoc.NSI
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@ namespace IntegrationDoc
     using System.Data.Entity.Spatial;
 
     [Table("dictionaries.nsi_org_types")]
-    public partial class nsi_org_types
+    public partial class nsi_org_types : IHasGuid
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int id { get; set; }
